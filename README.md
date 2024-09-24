@@ -117,14 +117,14 @@ The API tests are managed through **Bruno CLI**, which supports assertions and t
 
 - **Status Code Check**:
   ```javascript
-  test("Test Passed: Status code is 200", function() {
+  test("Global test: Status code is 200", function() {
     expect(res.getStatus()).to.equal(200);
   });
   ```
 
 - **Response Time Check**:
   ```javascript
-  test("Test Passed: Response time is under 1 second", function() {
+  test("Global test: Response time is under 1 second", function() {
     const responseTime = res.getResponseTime();
     expect(responseTime).to.be.below(1000);
   });
@@ -132,7 +132,7 @@ The API tests are managed through **Bruno CLI**, which supports assertions and t
 
 - **Array of Strings Check** (`photoUrls`):
   ```javascript
-  test("Test Passed: photoUrls is an array of strings", function() {
+  test("Local test: photoUrls is an array of strings", function() {
     expect(res.body.photoUrls).to.be.an('array');
     res.body.photoUrls.forEach(function(url) {
       expect(url).to.be.a('string');
