@@ -1,0 +1,32 @@
+name: Run Bruno CLI Collection
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  run-bruno-cli:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Étape 1: Vérifie le code source
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Étape 2: Utilise le meilleur conteneur pour npm
+    - name: Set up Node.js environment
+      uses: actions/setup-node@v3
+      with:
+        node-version: 'lts/*'
+
+    # Étape 3: Installe les dépendances npm à partir du package.json
+    - name: Install dependencies
+      run: npm install
+
+    # Étape 4: Exécute la collection Bruno CLI située dans src/test/bruno
+    - name: Run Bruno collection
+      run: npm test

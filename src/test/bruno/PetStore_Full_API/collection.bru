@@ -1,0 +1,10 @@
+tests {
+  test("Global test: Response code is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+   
+  test("Global test: Response time is under 1 second", function() {
+    const responseTime = res.getResponseTime();
+    expect(responseTime).to.be.below(1000);
+  });
+}

@@ -1,0 +1,26 @@
+meta {
+  name: Find pet by ID
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{url}}/pet/9223372036854775000
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.name: eq test_name
+  res.body.status: eq available
+}
+
+tests {
+  test("Local test: PhotoUrls is an array of strings", function() {
+    expect(res.body.photoUrls).to.be.an('array');
+    res.body.photoUrls.forEach(function(url) {
+      expect(url).to.be.a('string'); 
+    });
+  });
+}

@@ -1,0 +1,48 @@
+meta {
+  name: Add a pet
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{url}}/pet
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "id": 0,
+    "category": {
+      "id": 0,
+      "name": "string"
+    },
+    "name": "doggie",
+    "photoUrls": [
+      "string"
+    ],
+    "tags": [
+      {
+        "id": 0,
+        "name": "string"
+      }
+    ],
+    "status": "available"
+  }
+}
+
+assert {
+  res.body.status: eq available
+  res.status: eq 200
+  res.body.name: eq doggie
+}
+
+tests {
+  test("Local test: tags is an array of objects", function() {
+    expect(res.body.tags).to.be.an('array');
+    res.body.tags.forEach(function(tag) {
+      expect(tag).to.be.an('object');
+    });
+  });
+  
+}
