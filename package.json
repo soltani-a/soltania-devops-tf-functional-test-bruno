@@ -4,7 +4,7 @@
     "description": "Project to run Bruno CLI collections",
     "main": "index.js",
     "scripts": {
-      "test": "bru run src/test/bruno/PetStore_Full_Api  --env src/test/bruno/PetStore_Full_Api/Online.bru"
+      "test": "cd src/test/bruno/PetStore_Full_API && bru run --env Online"
     },
     "dependencies": {
       "@usebruno/cli": "^1.0.0"

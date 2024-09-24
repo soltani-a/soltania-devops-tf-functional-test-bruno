@@ -29,4 +29,5 @@ jobs:
 
     # Étape 4: Exécute la collection Bruno CLI située dans src/test/bruno
     - name: Run Bruno collection
-      run: npm test
+      run: 
+        npm test
