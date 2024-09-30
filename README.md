@@ -23,7 +23,7 @@ This repository is designed to test APIs using **Bruno CLI**. It contains API co
 │       └── bruno/                # Contains the Bruno collection for API testing
 ├── .github/
 │   └── workflows/
-│       └── ci.yml                # GitHub Actions workflow for running tests on push/pull
+│       └── main.yml                # GitHub Actions workflow for running tests on push/pull
 ├── package.json                  # npm dependencies including Bruno CLI
 ├── README.md                     # This file, documentation for the repository
 ```
@@ -32,7 +32,7 @@ This repository is designed to test APIs using **Bruno CLI**. It contains API co
 
 - **`src/test/bruno`**: Contains the Bruno collection for API testing. Each collection contains requests to different endpoints, along with assertions to validate response codes, response structure, and performance.
 - **`package.json`**: Lists the npm dependencies, including **Bruno CLI** as a global dependency.
-- **`.github/workflows/ci.yml`**: Defines the CI pipeline using GitHub Actions, which runs the Bruno collection automatically on each push or pull request.
+- **`.github/workflows/main.yml`**: Defines the CI pipeline using GitHub Actions, which runs the Bruno collection automatically on each push or pull request.
 
 ## Getting Started
 
@@ -85,11 +85,11 @@ You can run the tests locally using Bruno CLI to verify the API responses and pe
 
 ## GitHub Actions Integration
 
-This repository includes a GitHub Actions workflow (`ci.yml`) that automatically runs the API tests on every push or pull request to the `main` branch.
+This repository includes a GitHub Actions workflow (`main.yml`) that automatically runs the API tests on every push or pull request to the `main` branch.
 
 ### How it works:
 
-- **CI Workflow**: The `ci.yml` file in `.github/workflows/ci.yml` is configured to run Bruno CLI, install dependencies, and execute tests.
+- **CI Workflow**: The `main.yml` file in `.github/workflows/main.yml` is configured to run Bruno CLI, install dependencies, and execute tests.
 - The action checks for:
   - Status codes.
   - Response structure.
