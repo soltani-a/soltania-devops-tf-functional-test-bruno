@@ -23,10 +23,6 @@ jobs:
         with:
           node-version: 'lts/*'
 
-      # Étape 3: Installe les dépendances npm à partir du package.json
-      - name: Install dependencies
-        run: npm install
-
   approval:
     # Ajout de l'environnement "production" avec une règle d'approbation
     runs-on: ubuntu-latest
