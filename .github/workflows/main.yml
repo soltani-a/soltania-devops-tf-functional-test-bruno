@@ -27,6 +27,16 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      # Étape 4: Sauvegarde les dépendances installées dans un artefact
+      - name: Save node_modules as artifact
+        id: save-artifacts
+        run: zip -r node_modules.zip node_modules
+      - name: Upload node_modules artifact
+        uses: actions/upload-artifact@v4.4.2
+        with:
+          name: node-modules-artifact
+          path: node_modules.zip
+
   approval:
     # Ajout de l'environnement "production" avec une règle d'approbation
     runs-on: ubuntu-latest
@@ -56,6 +66,15 @@ jobs:
         with:
           node-version: 'lts/*'
 
-      # Étape 3: Exécute la collection Bruno CLI située dans src/test/bruno
+      # Étape 3: Télécharger les dépendances sauvegardées
+      - name: Download node_modules artifact
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: node-modules-artifact
+
+      - name: Unzip node_modules
+        run: unzip node_modules.zip -d .
+
+      # Étape 4: Exécute la collection Bruno CLI située dans src/test/bruno
       - name: Run Bruno collection
         run: npm test
