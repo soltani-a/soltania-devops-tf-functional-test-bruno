@@ -9,6 +9,10 @@ on:
       - main
       - develop
 
+permissions:  # Ajouter cette section pour configurer les permissions globales
+  id-token: write
+  contents: read
+
 jobs:
  use-reusable:
     uses: soltani-a/soltania-devops-github-actions-templates-prototype/.github/workflows/npm-build-and-test-template.yml@main
