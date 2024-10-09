@@ -14,6 +14,6 @@ permissions:  # Ajouter cette section pour configurer les permissions globales
   contents: read
 
 jobs:
- use-reusable:
+  use-reusable:
     uses: soltani-a/soltania-devops-github-actions-templates-prototype/.github/workflows/npm-build-and-test-template.yml@main
     secrets: inherit  # Hériter des secrets définis dans le dépôt actuel
