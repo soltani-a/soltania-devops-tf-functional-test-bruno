@@ -15,11 +15,11 @@ jobs:
     steps:
       # Étape 1: Vérifie le code source
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4.2.1
 
       # Étape 2: Utilise le meilleur conteneur pour npm
       - name: Set up Node.js environment
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4.0.4
         with:
           node-version: 'lts/*'
 
@@ -33,7 +33,6 @@ jobs:
     needs: run-bruno-cli
     environment:
       name: production
-      url: https://github.com/orgs/YOUR_ORG/environments/production
     permissions:
       id-token: write
       contents: read
@@ -49,11 +48,11 @@ jobs:
     steps:
       # Étape 1: Vérifie le code source
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4.2.1
 
       # Étape 2: Utilise le meilleur conteneur pour npm
       - name: Set up Node.js environment
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4.0.4
         with:
           node-version: 'lts/*'
 
