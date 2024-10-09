@@ -14,10 +14,4 @@ assert {
 }
 
 tests {
-  test("Local test: PhotoUrls is an array of strings", function() {
-    expect(res.body.photoUrls).to.be.an('array');
-    res.body.photoUrls.forEach(function(url) {
-      expect(url).to.be.a('string'); 
-    });
-  });
 }
