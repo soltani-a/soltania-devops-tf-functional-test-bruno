@@ -10,52 +10,6 @@ on:
       - develop
 
 jobs:
-  run-bruno-cli:
-    runs-on: ubuntu-latest
-    steps:
-      # Étape 1: Vérifie le code source
-      - name: Checkout code
-        uses: actions/checkout@v4.2.1
-
-      # Étape 2: Utilise le meilleur conteneur pour npm
-      - name: Set up Node.js environment
-        uses: actions/setup-node@v4.0.4
-        with:
-          node-version: 'lts/*'
-
-  approval:
-    # Ajout de l'environnement "production" avec une règle d'approbation
-    runs-on: ubuntu-latest
-    needs: run-bruno-cli
-    environment:
-      name: production
-    permissions:
-      id-token: write
-      contents: read
-
-    steps:
-      - name: Approval step
-        run: echo "Waiting for approval to proceed with npm test."
-
-  run-tests:
-    runs-on: ubuntu-latest
-    needs: approval
-
-    steps:
-      # Étape 1: Vérifie le code source
-      - name: Checkout code
-        uses: actions/checkout@v4.2.1
-
-      # Étape 2: Utilise le meilleur conteneur pour npm
-      - name: Set up Node.js environment
-        uses: actions/setup-node@v4.0.4
-        with:
-          node-version: 'lts/*'
-
-      # Étape 3: Installe les dépendances npm à partir du package.json
-      - name: Install dependencies
-        run: npm install
-
-      # Étape 4: Exécute la collection Bruno CLI située dans src/test/bruno
-      - name: Run Bruno collection
-        run: npm test
+ use-reusable:
+    uses: soltani-a/soltania-devops-github-actions-templates-prototype/.github/workflows/reusable-steps.yml@main
+    secrets: inherit  # Hériter des secrets définis dans le dépôt actuel
