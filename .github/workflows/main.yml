@@ -11,5 +11,5 @@ on:
 
 jobs:
  use-reusable:
-    uses: soltani-a/soltania-devops-github-actions-templates-prototype/.github/workflows/reusable-steps.yml@main
+    uses: soltani-a/soltania-devops-github-actions-templates-prototype/.github/workflows/npm-build-and-test-template.yml@main
     secrets: inherit  # Hériter des secrets définis dans le dépôt actuel
