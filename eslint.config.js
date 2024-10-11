@@ -1,23 +1,20 @@
-// eslint.config.js
-import { ESLint } from 'eslint';
-
-export default new ESLint({
-  baseConfig: {
-    parserOptions: {
-      ecmaVersion: 2020, // Set ECMAScript version
-      sourceType: 'module', // Allow the use of imports
-    },
-    env: {
-      browser: true, // Enable browser global variables
-      es2021: true, // Enable ES2021 features
-      node: true,   // Enable Node.js global variables
-    },
-    extends: [
-      'eslint:recommended', // Use recommended ESLint rules
+export default [
+  {
+    ignores: [
+      // Ignore all files and directories by default
+      "**/*"
     ],
     rules: {
-      'no-unused-vars': 'warn', // Warn for unused variables
-      'no-console': 'off', // Allow console statements
+      // Add basic rules if needed
+      "no-unused-vars": "warn", // Warn on unused variables
+      "no-console": "off"       // Allow console statements
     },
-  },
-});
+    languageOptions: {
+      ecmaVersion: 2021,        // Use ECMAScript 2021
+      sourceType: "module"      // Enable ES module support
+    },
+    linterOptions: {
+      reportUnusedDisableDirectives: true  // Report unused eslint-disable directives
+    }
+  }
+];

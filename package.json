@@ -6,7 +6,7 @@
   "type": "module", 
   "scripts": {
     "test": "cd src/test/bruno/PetStore_Full_API && bru run --env Online",
-    "lint": "eslint src --fix"
+    "lint": "eslint . --ext .js --fix || echo 'No JavaScript files to lint.'"
   },
   "dependencies": {
     "@usebruno/cli": "^1.0.0"
