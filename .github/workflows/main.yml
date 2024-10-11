@@ -1,6 +1,7 @@
 name: Run Bruno CLI Collection with Approval
 
 on:
+  workflow_dispatch:  # Enables manual execution from the GitHub UI
   push:
     branches:
       - main
