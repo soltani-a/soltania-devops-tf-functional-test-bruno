@@ -19,4 +19,4 @@ jobs:
     secrets: inherit
     with:
       node-version: '20'
-      working-directory: 'src'
+      working-directory: ''
