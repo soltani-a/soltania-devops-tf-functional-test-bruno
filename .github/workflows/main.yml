@@ -17,6 +17,7 @@ jobs:
   actions-workflow:
     uses: soltani-a/soltania-devops-github-actions-templates-prototype/.github/workflows/actions-ci-template.yml@main
     secrets: inherit
+    
   nodejs-workflow:
     uses: soltani-a/soltania-devops-github-actions-templates-prototype/.github/workflows/nodejs-ci-template.yml@main
     secrets: inherit
