@@ -21,6 +21,7 @@ jobs:
     
   nodejs-workflow:
     uses: soltani-a/soltania-devops-github-actions-templates-prototype/.github/workflows/nodejs-ci-template.yml@main
+    needs: actions-workflow
     secrets: inherit
     with:
       node-version: '20'
