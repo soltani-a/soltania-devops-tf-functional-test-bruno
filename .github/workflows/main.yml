@@ -1,0 +1,28 @@
+name: Run Bruno CLI Collection with Approval
+
+on:
+  workflow_dispatch:  # Enables manual execution from the GitHub UI
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+      - develop
+
+permissions:  # Ajouter cette section pour configurer les permissions globales
+  id-token: write
+  contents: read
+
+jobs:
+  actions-workflow:
+    uses: soltani-a/soltania-devops-github-actions-templates-prototype/.github/workflows/actions-ci-template.yml@main
+    secrets: inherit
+    
+  nodejs-workflow:
+    uses: soltani-a/soltania-devops-github-actions-templates-prototype/.github/workflows/nodejs-ci-template.yml@main
+    needs: actions-workflow
+    secrets: inherit
+    with:
+      node-version: '20'
+      working-directory: ''
