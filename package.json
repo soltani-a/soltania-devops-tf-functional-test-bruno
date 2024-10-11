@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Project to run Bruno CLI collections",
   "main": "index.js",
+  "type": "module", 
   "scripts": {
     "test": "cd src/test/bruno/PetStore_Full_API && bru run --env Online",
     "lint": "eslint src --fix"
