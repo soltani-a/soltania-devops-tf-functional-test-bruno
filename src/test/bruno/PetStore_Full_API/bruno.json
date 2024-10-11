@@ -1,9 +1,0 @@
-{
-  "version": "1",
-  "name": "PetStore_Full_API",
-  "type": "collection",
-  "ignore": [
-    "node_modules",
-    ".git"
-  ]
-}
