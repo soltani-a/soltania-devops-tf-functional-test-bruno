@@ -1,0 +1,15 @@
+meta {
+  name: Get a comment from ID
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{url}}/{{comment_path_root}}/{{commentId}}
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

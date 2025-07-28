@@ -1,0 +1,28 @@
+meta {
+  name: Update a post
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{url}}/{{post_path_root}}/{{postId}}
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-type: application/json; charset=UTF-8
+}
+
+body:json {
+  {
+    "id": {{postId}},
+    "title": "fodo",
+    "body": "bar",
+    "userId": 1
+  }
+}
+
+settings {
+  encodeUrl: true
+}

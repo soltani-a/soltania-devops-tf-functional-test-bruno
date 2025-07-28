@@ -1,0 +1,25 @@
+meta {
+  name: Patch a post
+  type: http
+  seq: 6
+}
+
+patch {
+  url: {{url}}/{{post_path_root}}/{{postId}}
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-type: application/json; charset=UTF-8
+}
+
+body:json {
+  {
+    "title": "fodddo"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

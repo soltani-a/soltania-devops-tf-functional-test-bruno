@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module", 
   "scripts": {
-    "test": "cd src/test/bruno/PetStore_Full_API && bru run --env Online",
+    "test": "cd src/test/bruno/JsonPlaceHolder_API && bru run --env JsonPlaceHolder_Environment",
     "lint": "eslint . --fix || echo 'No JavaScript files to lint.'"
   },
   "dependencies": {
@@ -15,5 +15,5 @@
     "eslint": "^9.12.0"
   },
   "author": "Slim SOLTANI DRIDI",
-  "license": "ISCdd"
+  "license": "ISC"
 }

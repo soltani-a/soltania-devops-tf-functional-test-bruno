@@ -1,0 +1,23 @@
+meta {
+  name: Delete a post
+  type: http
+  seq: 3
+}
+
+delete {
+  url: {{url}}/{{post_path_root}}/{{postId}}
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-type: application/json; charset=UTF-8
+}
+
+script:post-response {
+  bru.deleteEnvVar("postId");
+}
+
+settings {
+  encodeUrl: true
+}

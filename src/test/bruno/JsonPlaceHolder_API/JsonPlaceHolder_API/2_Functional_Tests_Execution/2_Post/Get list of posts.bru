@@ -1,0 +1,15 @@
+meta {
+  name: Get list of posts
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{url}}/{{post_path_root}}
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

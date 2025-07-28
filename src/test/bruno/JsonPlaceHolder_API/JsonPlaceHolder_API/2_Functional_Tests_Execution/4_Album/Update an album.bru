@@ -1,0 +1,26 @@
+meta {
+  name: Update an album
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{url}}/{{albums_path_root}}/{{albumId}}
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-type: application/json; charset=UTF-8
+}
+
+body:json {
+  {
+      "userId": {{userId}},
+      "title": "a new albums 1"
+    }
+}
+
+settings {
+  encodeUrl: true
+}

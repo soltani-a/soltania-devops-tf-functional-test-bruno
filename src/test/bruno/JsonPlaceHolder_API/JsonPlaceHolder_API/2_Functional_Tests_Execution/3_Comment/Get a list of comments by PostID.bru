@@ -1,0 +1,19 @@
+meta {
+  name: Get a list of comments by PostID
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{url}}/{{comment_path_root}}?postId={{postId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  postId: {{postId}}
+}
+
+settings {
+  encodeUrl: true
+}

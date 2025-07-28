@@ -1,0 +1,19 @@
+meta {
+  name: Get a list of albums by PostID
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{url}}/{{albums_path_root}}?postId={{postId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  postId: {{postId}}
+}
+
+settings {
+  encodeUrl: true
+}

@@ -1,0 +1,31 @@
+meta {
+  name: Create an album
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{url}}/{{albums_path_root}}
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-type: application/json; charset=UTF-8
+}
+
+body:json {
+  {
+      "userId": {{userId}},
+      "title": "a new albums"
+    }
+}
+
+script:post-response {
+  const albumId = res.body.id;
+  bru.setEnvVar( "albumId", albumId);
+}
+
+settings {
+  encodeUrl: true
+}

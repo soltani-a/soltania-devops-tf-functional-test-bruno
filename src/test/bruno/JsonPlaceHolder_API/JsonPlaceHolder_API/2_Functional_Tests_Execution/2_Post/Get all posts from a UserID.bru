@@ -1,0 +1,29 @@
+meta {
+  name: Get all posts from a UserID
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{url}}/{{post_path_root}}?userId={{userId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  userId: {{userId}}
+}
+
+tests {
+  test("Local test: tags is an array of objects", function() {
+    expect(res).to.be.an('array');
+    res.forEach(function(tag) {
+      expect(tag).to.be.an('object');
+    });
+  });
+  
+}
+
+settings {
+  encodeUrl: true
+}

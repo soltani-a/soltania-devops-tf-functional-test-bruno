@@ -1,0 +1,15 @@
+meta {
+  name: Get an album from ID
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{url}}/{{albums_path_root}}/{{albumId}}
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

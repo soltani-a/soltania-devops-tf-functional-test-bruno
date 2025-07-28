@@ -1,0 +1,33 @@
+meta {
+  name: Create a comment
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{url}}/{{comment_path_root}}
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-type: application/json; charset=UTF-8
+}
+
+body:json {
+  {
+    "postId": {{postId}},
+    "name": "id labore ex et quam laborum",
+    "email": "Eliseo@gardner.biz",
+    "body": "laudantium enim quasi est quidem magnam voluptate ipsam eos\ntempora quo necessitatibus\ndolor quam autem quasi\nreiciendis et nam sapiente accusantium"
+  }
+}
+
+script:post-response {
+  const commentId = res.body.id;
+  bru.setEnvVar( "commentId", commentId);
+}
+
+settings {
+  encodeUrl: true
+}

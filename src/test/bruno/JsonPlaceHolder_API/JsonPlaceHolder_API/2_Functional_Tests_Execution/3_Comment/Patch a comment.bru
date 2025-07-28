@@ -1,0 +1,25 @@
+meta {
+  name: Patch a comment
+  type: http
+  seq: 6
+}
+
+patch {
+  url: {{url}}/{{comment_path_root}}/{{commentId}}
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-type: application/json; charset=UTF-8
+}
+
+body:json {
+  {
+    "email": "test@test.fr"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

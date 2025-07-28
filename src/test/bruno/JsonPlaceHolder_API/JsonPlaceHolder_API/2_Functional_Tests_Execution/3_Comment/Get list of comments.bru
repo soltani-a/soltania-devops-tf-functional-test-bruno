@@ -1,0 +1,21 @@
+meta {
+  name: Get list of comments
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{url}}/{{comment_path_root}}
+  body: none
+  auth: inherit
+}
+
+assert {
+  res.status: eq 200
+  res.body.length: gt 0
+  res.body: isArray
+}
+
+settings {
+  encodeUrl: true
+}

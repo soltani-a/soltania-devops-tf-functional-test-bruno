@@ -1,0 +1,25 @@
+meta {
+  name: Patch an album
+  type: http
+  seq: 6
+}
+
+patch {
+  url: {{url}}/{{albums_path_root}}/{{albumId}}
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-type: application/json; charset=UTF-8
+}
+
+body:json {
+  {
+      "title": "a new albums 2"
+    }
+}
+
+settings {
+  encodeUrl: true
+}

@@ -1,0 +1,32 @@
+meta {
+  name: Create a post
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{url}}/{{post_path_root}}
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-type: application/json; charset=UTF-8
+}
+
+body:json {
+  {
+    "title": "foo",
+    "body": "bar",
+    "userId": {{userId}}
+  }
+}
+
+script:post-response {
+  const postId = res.body.id;
+  bru.setEnvVar( "postId", postId);
+}
+
+settings {
+  encodeUrl: true
+}

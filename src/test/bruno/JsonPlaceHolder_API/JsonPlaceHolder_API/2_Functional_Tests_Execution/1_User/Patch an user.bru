@@ -1,0 +1,25 @@
+meta {
+  name: Patch an user
+  type: http
+  seq: 6
+}
+
+patch {
+  url: {{url}}/{{user_path_root}}/{{userId}}
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-type: application/json; charset=UTF-8
+}
+
+body:json {
+  {
+    "name": "Slim Graham"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

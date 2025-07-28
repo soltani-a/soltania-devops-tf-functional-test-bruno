@@ -1,0 +1,15 @@
+meta {
+  name: Get a post by ID
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{url}}/{{post_path_root}}/{{postId}}
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

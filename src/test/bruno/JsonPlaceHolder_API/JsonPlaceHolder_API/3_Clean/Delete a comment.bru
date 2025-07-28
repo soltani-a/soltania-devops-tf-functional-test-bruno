@@ -1,0 +1,23 @@
+meta {
+  name: Delete a comment
+  type: http
+  seq: 2
+}
+
+delete {
+  url: {{url}}/{{comment_path_root}}/{{commentId}}
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-type: application/json; charset=UTF-8
+}
+
+script:post-response {
+  bru.deleteEnvVar("commentId");
+}
+
+settings {
+  encodeUrl: true
+}
