@@ -1,6 +1,6 @@
 # 🚀 Bruno CLI API Testing – JsonPlaceholder Example
 
-![CI](https://img.shields.io/github/actions/workflow/status/YOUR_USERNAME/soltania-devops-tf-functional-test-bruno/main.yml?branch=main)
+![CI](https://img.shields.io/github/actions/workflow/status/soltani-a/soltania-devops-tf-functional-test-bruno/main.yml?branch=main)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Bruno CLI](https://img.shields.io/badge/Bruno%20CLI-API%20Testing-green)
 
