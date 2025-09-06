@@ -1,155 +1,163 @@
-
-# Project Name - API Testing with Bruno CLI
+# 🚀 soltania-devops-tf-github-prototype
 
 ## Overview
 
-This repository is designed to test APIs using **Bruno CLI**. It contains API collections, test scripts, and automated checks for performance, status codes, and response structures. The goal is to ensure that the API behaves as expected and performs within acceptable limits (response time under 1 second).
+This repository demonstrates how to **automate the creation and management of GitHub repositories using Terraform**.  
+It provides a reusable Terraform module and Bash automation script to quickly provision repositories with predefined configurations, making it ideal for DevOps workflows, Infrastructure as Code (IaC), and CI/CD pipelines.  
+
+---
 
 ## Table of Contents
 
 - [Project Structure](#project-structure)
+- [Features](#features)
+- [Prerequisites](#prerequisites)
 - [Getting Started](#getting-started)
-- [Running Tests](#running-tests)
-- [GitHub Actions Integration](#github-actions-integration)
-- [Bruno Collection](#bruno-collection)
+- [Usage](#usage)
+- [GitHub Token Setup](#github-token-setup)
 - [Contributing](#contributing)
+- [License](#license)
 
-## Project Structure
+---
+
+## 📂 Project Structure
 
 ```
 /
 ├── src/
-│   └── test/
-│       └── bruno/                # Contains the Bruno collection for API testing
-├── .github/
-│   └── workflows/
-│       └── main.yml                # GitHub Actions workflow for running tests on push/pull
-├── package.json                  # npm dependencies including Bruno CLI
-├── README.md                     # This file, documentation for the repository
+│   └── main/
+│       ├── bash/
+│       │   └── execute_terraform.sh     # Bash script to automate Terraform execution
+│       └── terraform/                   # Terraform files for GitHub repo creation
+│           ├── main.tf                  # Defines GitHub repository resources
+│           ├── provider.tf              # GitHub provider configuration
+│           ├── variable.tf              # Input variables for repository configuration
+│           └── output.tf                # Outputs from Terraform execution
+├── README.md                            # Documentation for this repository
 ```
 
-### Key Folders and Files
+---
 
-- **`src/test/bruno`**: Contains the Bruno collection for API testing. Each collection contains requests to different endpoints, along with assertions to validate response codes, response structure, and performance.
-- **`package.json`**: Lists the npm dependencies, including **Bruno CLI** as a global dependency.
-- **`.github/workflows/main.yml`**: Defines the CI pipeline using GitHub Actions, which runs the Bruno collection automatically on each push or pull request.
+## 🔥 Features
 
-## Getting Started
+- **Infrastructure as Code**: Fully automate GitHub repository creation using Terraform.
+- **Reusable Terraform module**: Configure multiple repositories from a single configuration file.
+- **Bash automation script**:
+  - Formats and initializes Terraform.
+  - Generates a `.tfplan` file with a timestamp.
+  - Applies the plan automatically.
+  - Archives plan files in an `old/` directory.
+- **Version Control**: Store all infrastructure changes as code.
 
-### Prerequisites
+---
 
-- Node.js (version 14.x or above)
-- npm (version 6.x or above)
-- Bruno CLI
+## ⚙️ Prerequisites
 
-### Installation
+- **Terraform** v0.15+ installed ([Download](https://www.terraform.io/downloads.html))
+- **GitHub account**
+- **GitHub Personal Access Token (PAT)** with appropriate permissions
+- Bash shell (Linux, macOS, or Git Bash on Windows)
 
-1. **Clone the repository**:
+---
 
-   ```bash
-   git clone https://github.com/yourusername/your-repo.git
-   ```
+## 🚀 Getting Started
 
-2. **Navigate to the project directory**:
+### 1. Clone the Repository
 
-   ```bash
-   cd your-repo
-   ```
+```bash
+git clone https://github.com/your-username/soltania-devops-tf-github-prototype.git
+cd soltania-devops-tf-github-prototype
+```
 
-3. **Install npm dependencies**:
+### 2. Install Terraform
 
-   ```bash
-   npm install
-   ```
+Follow the official [Terraform installation guide](https://developer.hashicorp.com/terraform/downloads).
 
-   This will install the Bruno CLI and any other dependencies listed in the `package.json`.
+---
 
-## Running Tests
+## 🔑 GitHub Token Setup
 
-You can run the tests locally using Bruno CLI to verify the API responses and performance.
+1. Go to **GitHub → Settings → Developer settings → Personal Access Tokens → Tokens (classic)**.
+2. Click **Generate new token**:
+   - Select scopes:  
+     - `repo` (to manage repositories)
+     - `admin:repo_hook` (if needed)
+3. Copy the token.
 
-1. **Run Bruno collection**:
+4. Export it as an environment variable:
 
-   ```bash
-   bruno run src/test/bruno/bruno.json
-   ```
+```bash
+export GITHUB_TOKEN="your_personal_access_token"
+```
 
-   This will execute the collection of API requests and validate:
-   - The status code is `200`.
-   - The response structure (e.g., `photoUrls` is an array of strings, `tags` is an array of objects).
-   - The response time is under 1 second.
+Windows (PowerShell):
 
-2. **Test API performance**:
+```powershell
+setx GITHUB_TOKEN "your_personal_access_token"
+```
 
-   The tests also ensure that the API response time is under 1 second, with automated assertions built into the collection.
+---
 
-## GitHub Actions Integration
+## Usage
 
-This repository includes a GitHub Actions workflow (`main.yml`) that automatically runs the API tests on every push or pull request to the `main` branch.
+Run the automation script from the **project root**:
 
-### How it works:
+```bash
+bash src/main/bash/execute_terraform.sh
+```
 
-- **CI Workflow**: The `main.yml` file in `.github/workflows/main.yml` is configured to run Bruno CLI, install dependencies, and execute tests.
-- The action checks for:
-  - Status codes.
-  - Response structure.
-  - Response time (performance testing).
+What it does:
+1. Formats all Terraform files.
+2. Initializes Terraform.
+3. Plans infrastructure changes and creates a timestamped `.tfplan` file.
+4. Applies the plan automatically.
+5. Archives the `.tfplan` file.
 
-You can view the results of the automated tests in the **Actions** tab of the repository.
+---
 
-## Bruno Collection
+## Example Terraform Configuration
 
-The API tests are managed through **Bruno CLI**, which supports assertions and test scripts similar to tools like Postman. The collection (`bruno.json`) contains various requests for API endpoints and scripts to validate responses.
+```hcl
+variable "repositories" {
+  description = "Map of GitHub repositories to provision"
+  type = map(object({
+    description = string
+    visibility  = string
+  }))
+  default = {
+    "default_repo" = {
+      description = "Default repository description"
+      visibility  = "private"
+    }
+  }
+}
+```
 
-### Example Requests:
+Modify `variable.tf` to add your own repositories.
 
-1. **Get Pet by ID**:
-   - Method: `GET`
-   - URL: `https://petstore.swagger.io/v2/pet/{petId}`
-   - Asserts the status code is `200`, and response body contains the correct structure.
-
-2. **Add a New Pet**:
-   - Method: `POST`
-   - URL: `https://petstore.swagger.io/v2/pet`
-   - Validates the status and ensures the correct response format.
-
-### Example Tests:
-
-- **Status Code Check**:
-  ```javascript
-  test("Global test: Status code is 200", function() {
-    expect(res.getStatus()).to.equal(200);
-  });
-  ```
-
-- **Response Time Check**:
-  ```javascript
-  test("Global test: Response time is under 1 second", function() {
-    const responseTime = res.getResponseTime();
-    expect(responseTime).to.be.below(1000);
-  });
-  ```
-
-- **Array of Strings Check** (`photoUrls`):
-  ```javascript
-  test("Local test: photoUrls is an array of strings", function() {
-    expect(res.body.photoUrls).to.be.an('array');
-    res.body.photoUrls.forEach(function(url) {
-      expect(url).to.be.a('string');
-    });
-  });
-  ```
+---
 
 ## Contributing
 
-Contributions are welcome! If you'd like to add more tests, improve the documentation, or enhance the workflow, feel free to open a pull request.
+Contributions are welcome!  
 
-1. Fork the repository.
-2. Create your feature branch: `git checkout -b feature/my-feature`.
-3. Commit your changes: `git commit -m 'Add new feature'`.
-4. Push to the branch: `git push origin feature/my-feature`.
-5. Open a pull request.
+1. Fork the repository.  
+2. Create your feature branch:  
+   ```bash
+   git checkout -b feature/my-feature
+   ```  
+3. Commit changes:  
+   ```bash
+   git commit -m 'Add new feature'
+   ```  
+4. Push the branch:  
+   ```bash
+   git push origin feature/my-feature
+   ```  
+5. Create a Pull Request.
 
-## License
+---
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## 📜 License
+
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
