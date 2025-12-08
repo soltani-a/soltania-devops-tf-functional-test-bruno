@@ -14,12 +14,49 @@ params:query {
   userId: {{userId}}
 }
 
+script:pre-request {
+  // --- Showcase Strategy: Filtering Robustness ---
+  
+  // On s'assure d'avoir un UserID cible.
+  let targetId = bru.getVar("userId");
+  
+  if (!targetId) {
+    // Si lancé isolément, on filtre sur l'user 1
+    targetId = 1;
+    bru.setVar("userId", targetId);
+    console.log("[Showcase Info] Defaulting to User ID 1 for filter test.");
+  }
+}
+
 tests {
-  test("Local test: tags is an array of objects", function() {
-    expect(res).to.be.an('array');
-    res.forEach(function(tag) {
-      expect(tag).to.be.an('object');
+  // 1. Validation HTTP
+  test("Status code is 200 OK", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  // 2. Validation de Structure
+  test("Response is an array of posts", function() {
+    // CORRECTION : On teste res.getBody(), pas res
+    const body = res.getBody();
+    expect(body).to.be.an('array');
+    
+    // On s'attend à trouver des résultats pour un user valide
+    expect(body.length).to.be.greaterThan(0);
+  });
+  
+  // 3. Validation de la Logique de Filtrage (Showcase Skill)
+  test("All returned posts belong to the requested User ID", function() {
+    const posts = res.getBody();
+    const requestedId = parseInt(bru.getVar("userId"));
+    
+    // On parcourt TOUS les résultats pour être sûr qu'aucun intrus ne s'est glissé
+    posts.forEach(function(post) {
+      expect(post.userId).to.equal(requestedId);
     });
   });
   
+  // 4. Performance
+  test("Search query is fast (< 500ms)", function() {
+    expect(res.getResponseTime()).to.be.below(500);
+  });
 }

@@ -17,8 +17,51 @@ headers {
 body:json {
   {
     "id": {{postId}},
-    "title": "fodo",
-    "body": "bar",
-    "userId": 1
+    "title": "{{updatedTitle}}",
+    "body": "{{updatedBody}}",
+    "userId": {{userId}}
   }
+}
+
+script:pre-request {
+  // --- Showcase Strategy: Full Resource Replacement (PUT) ---
+  
+  // Scénario : L'article a été relu et validé. 
+  // On met à jour le titre et le corps, mais on doit conserver l'ID et le UserID
+  // car le PUT écrase tout ce qu'on ne lui envoie pas.
+
+  // 1. Self-Healing (Sécurité)
+  // On s'assure d'avoir un PostID et un UserID cibles.
+  if (!bru.getVar("postId")) bru.setVar("postId", 1);
+  if (!bru.getVar("userId")) bru.setVar("userId", 1);
+
+  // 2. Génération de contenu "Mise à jour"
+  // On simule une validation par l'équipe Soltani-A
+  const randomRef = Math.floor(Math.random() * 9000) + 1000;
+  
+  bru.setVar("updatedTitle", `[APPROVED] Soltani-A Architecture Review #${randomRef}`);
+  bru.setVar("updatedBody", "This infrastructure design has been validated by the Soltani-A DevOps Center of Excellence. Compliance checks passed.");
+}
+
+tests {
+  // 1. Validation HTTP
+  test("Status code is 200 OK", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  // 2. Validation Métier
+  test("Title is updated with Approval tag", function() {
+    expect(res.getBody().title).to.include("[APPROVED]");
+  });
+
+  test("Body mentions Soltani-A validation", function() {
+    expect(res.getBody().body).to.include("Soltani-A");
+  });
+
+  // 3. Validation Technique (PUT Behavior)
+  test("UserID is preserved", function() {
+    // C'est crucial pour un PUT : vérifier qu'on n'a pas cassé le lien parent
+    const expectedUserId = parseInt(bru.getVar("userId"));
+    expect(res.getBody().userId).to.equal(expectedUserId);
+  });
 }

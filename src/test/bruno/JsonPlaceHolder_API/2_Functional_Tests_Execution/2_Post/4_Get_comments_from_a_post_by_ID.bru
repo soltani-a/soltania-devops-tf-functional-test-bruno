@@ -9,3 +9,49 @@ get {
   body: none
   auth: inherit
 }
+
+script:pre-request {
+  // --- Showcase Strategy: Nested Resource Stability ---
+  
+  // On s'assure d'avoir un Post ID valide.
+  let targetId = bru.getVar("postId");
+  
+  // Self-healing : Si le test est lancé seul, on prend le Post 1
+  if (!targetId) {
+    targetId = 1;
+    bru.setVar("postId", targetId);
+    console.log("[Showcase Info] Defaulting to Post ID 1 for comments fetch.");
+  }
+}
+
+tests {
+  // 1. Validation Standard
+  test("Status code is 200 OK", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  test("Response is an array", function() {
+    expect(res.getBody()).to.be.an('array');
+  });
+
+  // 2. Validation Logique (Foreign Key Integrity)
+  test("Comments belong to the requested Post ID", function() {
+    const comments = res.getBody();
+    const currentPostId = parseInt(bru.getVar("postId"));
+    
+    // Si il y a des commentaires, on vérifie le premier
+    if (comments.length > 0) {
+      expect(comments[0].postId).to.equal(currentPostId);
+    }
+  });
+
+  // 3. Validation de Format (Regex Showcase)
+  test("Commenter emails have valid format", function() {
+    const comments = res.getBody();
+    if (comments.length > 0) {
+      const email = comments[0].email;
+      // Regex simple pour valider la présence de @ et .
+      expect(email).to.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
+    }
+  });
+}

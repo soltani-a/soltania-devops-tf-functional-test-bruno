@@ -16,6 +16,53 @@ headers {
 
 body:json {
   {
-    "title": "fodddo"
+    "title": "{{patchedTitle}}"
   }
+}
+
+script:pre-request {
+  // --- Showcase Strategy: Partial Update (PATCH) ---
+  
+  // Scénario : L'article a été approuvé (étape 5).
+  // Maintenant, on ajoute juste le numéro de version (Release) au titre.
+  
+  // 1. Self-Healing
+  if (!bru.getVar("postId")) bru.setVar("postId", 1);
+
+  // 2. Génération dynamique (Versioning)
+  const major = Math.floor(Math.random() * 5) + 1;
+  const minor = Math.floor(Math.random() * 10);
+  
+  // Ex: "[v3.4] Soltani-A Architecture Review"
+  const newTitle = `[v${major}.${minor}] Soltani-A Architecture Review`;
+  
+  bru.setVar("patchedTitle", newTitle);
+}
+
+tests {
+  // 1. Validation de succès
+  test("Status code is 200 OK", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  // 2. Validation de la modification
+  test("Title is updated with Version Tag", function() {
+    const expected = bru.getVar("patchedTitle");
+    expect(res.getBody().title).to.equal(expected);
+  });
+
+  // 3. Validation de NON-RÉGRESSION (Showcase Skill)
+  test("Body content is preserved (NOT deleted)", function() {
+    // C'est la différence clé avec PUT. 
+    // On n'a pas envoyé de "body" dans la requête, il doit donc rester tel quel.
+    const bodyContent = res.getBody().body;
+    
+    // On vérifie qu'il n'est pas vide ou undefined
+    expect(bodyContent).to.be.a('string');
+    expect(bodyContent.length).to.be.greaterThan(0);
+    
+    // Si l'étape 5 a couru, le body contient "Soltani-A". 
+    // Sinon (test isolé), il contient le lorem ipsum par défaut.
+    // Le test passe dans les deux cas tant que le contenu existe.
+  });
 }
