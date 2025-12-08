@@ -16,6 +16,51 @@ headers {
 
 body:json {
   {
-      "title": "a new albums 2"
+    "title": "{{patchedAlbumTitle}}"
+  }
+}
+
+script:pre-request {
+  // --- Showcase Strategy: Partial Update (Status Change) ---
+  
+  // Scénario : L'album "Infrastructure" est maintenant prêt à être partagé.
+  // On ajoute le tag [PUBLIC] au titre.
+  
+  // 1. Self-Healing
+  if (!bru.getVar("albumId")) bru.setVar("albumId", 1);
+
+  // 2. Génération dynamique
+  // On garde une structure pro
+  const randomVersion = Math.floor(Math.random() * 10);
+  
+  // Ex: "Infrastructure Audit (v1.4) - [PUBLIC ACCESS]"
+  bru.setVar("patchedAlbumTitle", `Infrastructure Audit (v1.${randomVersion}) - [PUBLIC ACCESS]`);
+}
+
+tests {
+  // 1. Validation de Succès
+  test("Status code is 200 OK", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  // 2. Validation de la Modification
+  test("Title is updated to Public Access", function() {
+    const expected = bru.getVar("patchedAlbumTitle");
+    expect(res.getBody().title).to.equal(expected);
+  });
+
+  // 3. Test de NON-RÉGRESSION (Showcase Skill)
+  test("User ID is preserved (Data Integrity)", function() {
+    // Le PATCH ne doit modifier QUE le titre.
+    // L'userId doit être toujours présent et correct.
+    
+    // Si on a l'userId en mémoire, on compare la valeur
+    if (bru.getVar("userId")) {
+       const expectedUserId = parseInt(bru.getVar("userId"));
+       expect(res.getBody().userId).to.equal(expectedUserId);
+    } else {
+       // Sinon on vérifie juste que le champ n'a pas disparu
+       expect(res.getBody()).to.have.property('userId');
     }
+  });
 }

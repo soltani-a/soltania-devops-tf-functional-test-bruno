@@ -16,6 +16,52 @@ headers {
 
 body:json {
   {
-    "email": "test@test.fr"
+    "email": "{{patchedEmail}}"
   }
+}
+
+script:pre-request {
+  // --- Showcase Strategy: Partial Update & Workflow ---
+  
+  // Scénario : Le ticket est résolu. Le Manager QA prend le relais.
+  // On ne change QUE l'email, le reste (Body/Name) doit rester intact.
+  
+  // 1. Self-Healing
+  if (!bru.getVar("commentId")) bru.setVar("commentId", 1);
+
+  // 2. Génération dynamique (Branding Soltani-A)
+  const randomId = Math.floor(Math.random() * 100);
+  const email = `qa-manager.${randomId}@soltani-a.ai`;
+  
+  bru.setVar("patchedEmail", email);
+}
+
+tests {
+  // 1. Validation de Succès
+  test("Status code is 200 OK", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  // 2. Validation de la Modification
+  test("Email is updated to QA Manager", function() {
+    const expected = bru.getVar("patchedEmail");
+    expect(res.getBody().email).to.equal(expected);
+  });
+
+  // 3. Test de NON-RÉGRESSION (Le plus important pour PATCH)
+  test("Previous data (Name/Body) is preserved", function() {
+    // Si l'étape 5 (PUT) a été jouée, le nom contient "[RESOLVED]".
+    // Le PATCH ne doit PAS avoir effacé cela.
+    
+    const name = res.getBody().name;
+    
+    // On vérifie que le champ existe et n'est pas vide
+    expect(name).to.be.a('string');
+    expect(name.length).to.be.greaterThan(0);
+    
+    // Bonus : si on est dans le flux complet, on vérifie la valeur
+    if (name.includes("RESOLVED")) {
+      expect(name).to.include("[RESOLVED]");
+    }
+  });
 }

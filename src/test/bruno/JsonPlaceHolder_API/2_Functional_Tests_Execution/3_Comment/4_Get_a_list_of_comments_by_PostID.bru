@@ -13,3 +13,47 @@ get {
 params:query {
   postId: {{postId}}
 }
+
+script:pre-request {
+  // --- Showcase Strategy: Robust Filtering ---
+  
+  // On s'assure d'avoir un PostID cible.
+  let targetId = bru.getVar("postId");
+  
+  // Self-healing : Si le test est lancé isolément, on filtre sur le post 1
+  if (!targetId) {
+    targetId = 1;
+    bru.setVar("postId", targetId);
+    console.log("[Showcase Info] Defaulting to Post ID 1 for comment filtering.");
+  }
+}
+
+tests {
+  // 1. Validation HTTP
+  test("Status code is 200 OK", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  // 2. Validation de Structure
+  test("Response is an array", function() {
+    expect(res.getBody()).to.be.an('array');
+  });
+
+  test("Response is not empty (for valid ID)", function() {
+    // On s'attend à ce que le Post 1 ait des commentaires
+    expect(res.getBody().length).to.be.greaterThan(0);
+  });
+
+  // 3. Validation de la Logique de Filtrage (Showcase Skill)
+  test("All returned comments belong to the requested Post ID", function() {
+    const comments = res.getBody();
+    const requestedId = parseInt(bru.getVar("postId"));
+    
+    // On boucle sur CHAQUE commentaire reçu.
+    // Si un seul commentaire a le mauvais postId, le test échoue.
+    // C'est la preuve qu'on valide le moteur de filtrage de l'API.
+    comments.forEach(function(comment) {
+      expect(comment.postId).to.equal(requestedId);
+    });
+  });
+}

@@ -16,12 +16,68 @@ headers {
 
 body:json {
   {
-      "userId": {{userId}},
-      "title": "a new albums"
-    }
+    "userId": {{userId}},
+    "title": "{{albumTitle}}"
+  }
+}
+
+script:pre-request {
+  // --- Showcase Strategy: Contextual Data Generation ---
+  
+  // 1. Self-Healing (Robustesse)
+  // On s'assure d'avoir un UserID valide pour attacher l'album.
+  if (!bru.getVar("userId")) {
+    bru.setVar("userId", 1);
+    console.log("[Showcase Info] Defaulting to User ID 1 for album creation.");
+  }
+
+  // 2. Génération de contenu "Documentation Technique"
+  // On simule des albums de screenshots ou de diagrammes d'infra.
+  const topics = [
+    "AWS Network Topology", 
+    "Kubernetes Pod Logs", 
+    "CI/CD Pipeline Screenshots", 
+    "Database Schema Versions"
+  ];
+  
+  const randomTopic = topics[Math.floor(Math.random() * topics.length)];
+  const year = new Date().getFullYear();
+  
+  // Ex: "CI/CD Pipeline Screenshots - 2024 Archive"
+  const title = `${randomTopic} - ${year} Archive (Soltani-A)`;
+
+  bru.setVar("albumTitle", title);
 }
 
 script:post-response {
-  const albumId = res.body.id;
-  bru.setEnvVar( "albumId", albumId);
+  // --- Showcase Best Practice: Runtime Scope ---
+  
+  // Correction : On utilise setVar (Session) et PAS setEnvVar (Fichier).
+  // Cela garde le fichier .bru propre et évite les conflits git.
+  
+  const newId = res.body.id;
+  
+  if(newId) {
+    bru.setVar("newAlbumId", newId);
+    console.log(`[Showcase Info] Created Album ID: ${newId} "${bru.getVar("albumTitle")}"`);
+  }
+}
+
+tests {
+  // 1. Validation de création
+  test("Status code is 201 Created", function() {
+    expect(res.getStatus()).to.equal(201);
+  });
+
+  // 2. Validation de contenu
+  test("Album title matches generated data", function() {
+    const sentTitle = bru.getVar("albumTitle");
+    expect(res.getBody().title).to.equal(sentTitle);
+  });
+
+  // 3. Validation Relationnelle
+  test("Album is linked to correct User", function() {
+    const expectedUserId = parseInt(bru.getVar("userId"));
+    expect(res.getBody().userId).to.equal(expectedUserId);
+  });
 }

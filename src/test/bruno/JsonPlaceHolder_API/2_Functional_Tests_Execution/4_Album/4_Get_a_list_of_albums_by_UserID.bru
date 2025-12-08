@@ -1,0 +1,63 @@
+meta {
+  name: 4_Get_a_list_of_albums_by_UserID
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{url}}/{{albums_path_root}}?userId={{userId}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  userId: {{userId}}
+}
+
+script:pre-request {
+  // --- Showcase Strategy: Logical Consistency ---
+  
+  // Note : On filtre par UserID (et non PostID) car les Albums appartiennent aux Users.
+  
+  // 1. Self-healing
+  let targetId = bru.getVar("userId");
+  
+  if (!targetId) {
+    // Si lancé isolément, on filtre sur l'user 1 qui a toujours des albums
+    targetId = 1;
+    bru.setVar("userId", targetId);
+    console.log("[Showcase Info] Defaulting to User ID 1 for album filtering.");
+  }
+}
+
+tests {
+  // 1. Validation HTTP
+  test("Status code is 200 OK", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  // 2. Validation de Structure
+  test("Response is an array", function() {
+    expect(res.getBody()).to.be.an('array');
+  });
+
+  test("Response is not empty", function() {
+    expect(res.getBody().length).to.be.greaterThan(0);
+  });
+
+  // 3. Validation de la Logique de Filtrage (Showcase Skill)
+  test("All returned albums belong to the requested User ID", function() {
+    const albums = res.getBody();
+    const requestedId = parseInt(bru.getVar("userId"));
+    
+    // On vérifie CHAQUE album pour être sûr que le filtre API fonctionne
+    albums.forEach(function(album) {
+      expect(album.userId).to.equal(requestedId);
+    });
+  });
+  
+  // 4. Performance
+  test("Filter query is fast (< 500ms)", function() {
+    expect(res.getResponseTime()).to.be.below(500);
+  });
+}

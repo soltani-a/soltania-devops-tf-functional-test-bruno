@@ -17,13 +17,65 @@ headers {
 body:json {
   {
     "postId": {{postId}},
-    "name": "id labore ex et quam laborum",
-    "email": "Eliseo@gardner.biz",
-    "body": "laudantium enim quasi est quidem magnam voluptate ipsam eos\ntempora quo necessitatibus\ndolor quam autem quasi\nreiciendis et nam sapiente accusantium"
+    "name": "{{commentName}}",
+    "email": "{{commentEmail}}",
+    "body": "{{commentBody}}"
   }
 }
 
+script:pre-request {
+  // --- Showcase Strategy: Contextual Data Generation ---
+  
+  // 1. Self-Healing (Robustesse)
+  // On a besoin d'un PostID valide pour attacher le commentaire.
+  if (!bru.getVar("postId")) {
+    bru.setVar("postId", 1);
+  }
+
+  // 2. Génération de scénario "Code Review"
+  // On simule un commentaire automatique ou humain sur une Pull Request
+  const reviewers = ["SonarQube Bot", "Senior Dev", "Security Scanner"];
+  const selectedReviewer = reviewers[Math.floor(Math.random() * reviewers.length)];
+  
+  // Génération dynamique
+  const randomId = Math.floor(Math.random() * 9999);
+  const name = `[PR Review #${randomId}] Feedback from ${selectedReviewer}`;
+  const email = `${selectedReviewer.replace(/\s/g, '.').toLowerCase()}@soltani-a.ai`;
+  const body = "Performance issue detected in line 42. Please optimize the loop before merging.";
+
+  // Injection des variables
+  bru.setVar("commentName", name);
+  bru.setVar("commentEmail", email);
+  bru.setVar("commentBody", body);
+}
+
 script:post-response {
-  const commentId = res.body.id;
-  bru.setEnvVar( "commentId", commentId);
+  // --- Showcase Best Practice: Runtime Scope ---
+  
+  // Correction : On utilise setVar (Session) et PAS setEnvVar (Fichier).
+  const newId = res.body.id;
+  
+  if(newId) {
+    bru.setVar("newCommentId", newId);
+    console.log(`[Showcase Info] Created Comment ID: ${newId} for Post ${bru.getVar("postId")}`);
+  }
+}
+
+tests {
+  // 1. Validation de création
+  test("Status code is 201 Created", function() {
+    expect(res.getStatus()).to.equal(201);
+  });
+
+  // 2. Validation de contenu (Echo check)
+  test("Comment name matches generated data", function() {
+    const sentName = bru.getVar("commentName");
+    expect(res.getBody().name).to.equal(sentName);
+  });
+
+  // 3. Validation de format (Email)
+  test("Email is correctly formatted and branded", function() {
+    const email = res.getBody().email;
+    expect(email).to.include("@soltani-a.ai");
+  });
 }

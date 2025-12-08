@@ -9,3 +9,52 @@ get {
   body: none
   auth: inherit
 }
+
+script:post-response {
+  // --- Showcase Strategy: Data Bootstrapping ---
+  
+  // On récupère un Album existant pour alimenter la suite des tests.
+  const albums = res.getBody();
+  
+  if (Array.isArray(albums) && albums.length > 0) {
+    const firstAlbum = albums[0];
+    
+    // On sauvegarde l'ID pour le test "Get by ID" et "Update"
+    bru.setVar("existingAlbumId", firstAlbum.id);
+    
+    // On sauvegarde aussi le UserID pour vérifier la cohérence plus tard
+    bru.setVar("relatedUserId", firstAlbum.userId);
+    
+    console.log(`[Showcase Bootstrap] Selected Album ID: ${firstAlbum.id} (owned by User ${firstAlbum.userId})`);
+  } else {
+    console.warn("[Showcase Warning] No albums found.");
+  }
+}
+
+tests {
+  // 1. Validation Standard
+  test("Status code is 200 OK", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  // 2. Performance
+  test("Response time is under 500ms", function() {
+    expect(res.getResponseTime()).to.be.below(500);
+  });
+
+  // 3. Structure & Data Integrity
+  test("Response is a non-empty Array", function() {
+    const body = res.getBody();
+    expect(body).to.be.an('array');
+    expect(body.length).to.be.greaterThan(0);
+  });
+
+  // 4. Schema Validation (Deep Inspection)
+  test("Album has correct properties (id, title, userId)", function() {
+    const album = res.getBody()[0];
+    
+    expect(album).to.have.property('id').that.is.a('number');
+    expect(album).to.have.property('userId').that.is.a('number');
+    expect(album).to.have.property('title').that.is.a('string');
+  });
+}

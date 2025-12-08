@@ -16,10 +16,51 @@ headers {
 
 body:json {
   {
-    "postId": 1,
-    "name": "id labore ex et quam laborum",
-    "email": "Eliseo@gardner.bizdd",
-    "body": "laudantium enim quasi est quidem magnam voluptate ipsam eos\ntempora quo necessitatibus\ndolor quam autem quasi\nreiciendis et nam sapiente accusantium",
-    "id": 101
+    "id": {{commentId}},
+    "postId": {{postId}},
+    "name": "{{updatedName}}",
+    "email": "{{updatedEmail}}",
+    "body": "{{updatedBody}}"
   }
+}
+
+script:pre-request {
+  // --- Showcase Strategy: Full Resource Update (PUT) ---
+  
+  // Scénario : Le ticket/commentaire a été traité. 
+  // L'équipe Support met à jour le statut en "[RESOLVED]".
+  
+  // 1. Self-Healing (Sécurité)
+  // On s'assure d'avoir les IDs cibles pour ne pas casser le lien.
+  if (!bru.getVar("commentId")) bru.setVar("commentId", 1);
+  if (!bru.getVar("postId")) bru.setVar("postId", 1);
+
+  // 2. Génération de contenu "Support Technique"
+  // On remplace le texte aléatoire par une réponse pro.
+  bru.setVar("updatedName", "[RESOLVED] Performance Issue Fixed");
+  bru.setVar("updatedEmail", "support-team@soltani-a.ai");
+  bru.setVar("updatedBody", "The deployment pipeline has been optimized. Latency is back to normal levels.");
+}
+
+tests {
+  // 1. Validation HTTP
+  test("Status code is 200 OK", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  // 2. Validation Métier
+  test("Comment is marked as RESOLVED", function() {
+    expect(res.getBody().name).to.include("[RESOLVED]");
+  });
+
+  test("Email is updated to Support Team", function() {
+    expect(res.getBody().email).to.equal("support-team@soltani-a.ai");
+  });
+
+  // 3. Validation Technique (PUT Behavior)
+  test("Foreign Key (postId) is preserved", function() {
+    // Vérification cruciale pour un PUT : on n'a pas cassé le lien avec le post
+    const expectedPostId = parseInt(bru.getVar("postId"));
+    expect(res.getBody().postId).to.equal(expectedPostId);
+  });
 }
