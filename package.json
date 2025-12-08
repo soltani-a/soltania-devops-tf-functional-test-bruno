@@ -12,6 +12,7 @@
     "@usebruno/cli": "^1.0.0"
   },
   "devDependencies": {
+    "@usebruno/cli": "^1.37.0",
     "eslint": "^9.12.0"
   },
   "author": "Slim SOLTANI DRIDI",

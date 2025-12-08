@@ -1,11 +1,11 @@
 meta {
-  name: Patch an user
+  name: 6_Patch_a_post
   type: http
   seq: 6
 }
 
 patch {
-  url: {{url}}/{{user_path_root}}/{{userId}}
+  url: {{url}}/{{post_path_root}}/{{postId}}
   body: json
   auth: inherit
 }
@@ -16,7 +16,7 @@ headers {
 
 body:json {
   {
-    "name": "Slim Graham"
+    "title": "fodddo"
   }
 }
 

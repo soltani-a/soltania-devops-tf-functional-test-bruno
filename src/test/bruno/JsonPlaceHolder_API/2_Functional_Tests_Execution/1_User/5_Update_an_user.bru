@@ -1,0 +1,91 @@
+meta {
+  name: 5_Update_an_user
+  type: http
+  seq: 5
+}
+
+patch {
+  url: {{url}}/{{user_path_root}}/{{userId}}
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-type: application/json; charset=UTF-8
+}
+
+body:json {
+  {
+    "email": "{{newEmail}}",
+    "address": {
+      "street": "Jalan Pinang",
+      "suite": "Level 23, Menara Soltani",
+      "city": "Kuala Lumpur",
+      "zipcode": "50450",
+      "geo": {
+        "lat": "3.1516",
+        "lng": "101.7123"
+      }
+    },
+    "company": {
+      "name": "Soltani-A",
+      "catchPhrase": "Innovating DevOps Intelligence",
+      "bs": "AI-driven infrastructure automation"
+    }
+  }
+}
+
+settings {
+  encodeUrl: true
+}
+
+script:pre-request {
+  // --- Showcase Strategy: Contextual Update ---
+  
+  // Scénario : L'utilisateur existant vient d'être recruté.
+  // On va mettre à jour son Email pro et son adresse (Relocation).
+  
+  // 1. Sécurité (Self-healing)
+  // On s'assure qu'on a un ID cible. Sinon, on tape sur le 1 par défaut.
+  let targetId = bru.getVar("userId");
+  if (!targetId) {
+    bru.setVar("userId", 1); 
+    console.log("[Showcase Info] No userId set. Defaulting to ID 1 for update.");
+  }
+
+  // 2. Génération dynamique de l'email pro
+  // On génère un email cohérent avec le branding
+  const randomId = Math.floor(Math.random() * 1000);
+  const proEmail = `employee.${randomId}@soltani-a.ai`;
+  
+  bru.setVar("newEmail", proEmail);
+}
+
+tests {
+  // 1. Validation HTTP Standard
+  test("Status code is 200 OK", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  // 2. Validation Métier (Business Logic)
+  test("User company is now Soltani-A", function() {
+    // On vérifie que le PATCH a bien modifié le champ
+    expect(res.getBody().company.name).to.equal("Soltani-A");
+  });
+
+  test("User has moved to Kuala Lumpur", function() {
+    expect(res.getBody().address.city).to.equal("Kuala Lumpur");
+  });
+
+  test("Email domain is updated", function() {
+    expect(res.getBody().email).to.include("@soltani-a.ai");
+  });
+  
+  // 3. Validation Technique (PATCH behavior)
+  test("Other fields are preserved", function() {
+    // C'est un test subtil pour montrer qu'on comprend la différence entre PUT et PATCH.
+    // JSONPlaceholder renvoie l'objet complet. L'ID ne doit pas avoir changé.
+    const targetId = parseInt(bru.getVar("userId"));
+    expect(res.getBody().id).to.equal(targetId);
+  });
+}

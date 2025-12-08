@@ -1,11 +1,11 @@
 meta {
-  name: Patch a post
+  name: 6_Patch_a_comment
   type: http
   seq: 6
 }
 
 patch {
-  url: {{url}}/{{post_path_root}}/{{postId}}
+  url: {{url}}/{{comment_path_root}}/{{commentId}}
   body: json
   auth: inherit
 }
@@ -16,7 +16,7 @@ headers {
 
 body:json {
   {
-    "title": "fodddo"
+    "email": "test@test.fr"
   }
 }
 

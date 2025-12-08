@@ -1,11 +1,11 @@
 meta {
-  name: Delete a post
+  name: 2_Delete_a_comment
   type: http
-  seq: 3
+  seq: 2
 }
 
 delete {
-  url: {{url}}/{{post_path_root}}/{{postId}}
+  url: {{url}}/{{comment_path_root}}/{{commentId}}
   body: json
   auth: inherit
 }
@@ -15,7 +15,7 @@ headers {
 }
 
 script:post-response {
-  bru.deleteEnvVar("postId");
+  bru.deleteEnvVar("commentId");
 }
 
 settings {

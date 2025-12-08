@@ -1,0 +1,143 @@
+meta {
+  name: 2_Create_an_user
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{url}}/{{user_path_root}}
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-type: application/json; charset=UTF-8
+}
+
+body:json {
+  {
+    "name": "{{name}}",
+    "username": "{{username}}",
+    "email": "{{email}}",
+    "address": {
+      "street": "{{street}}",
+      "suite": "{{suite}}",
+      "city": "{{city}}",
+      "zipcode": "{{zipcode}}",
+      "geo": {
+        "lat": "{{lat}}",
+        "lng": "{{lng}}"
+      }
+    },
+    "phone": "{{phone}}",
+    "website": "{{website}}",
+    "company": {
+      "name": "{{companyName}}",
+      "catchPhrase": "{{companyCatchPhrase}}",
+      "bs": "{{companyBs}}"
+    }
+  }
+}
+
+settings {
+  encodeUrl: true
+}
+
+script:pre-request {
+  // --- 1. Générateurs d'identité (User Identity) ---
+  
+  function generateFullName() {
+    const firstNames = ["Julie", "Ahmad", "Sophie", "Wei", "Emma", "Ravi"];
+    const lastNames = ["Graham", "Bin Ismail", "Smith", "Tan", "Martin", "Subramaniam"];
+    
+    const randomFirst = firstNames[Math.floor(Math.random() * firstNames.length)];
+    const randomLast = lastNames[Math.floor(Math.random() * lastNames.length)];
+    return randomFirst + " " + randomLast;
+  }
+
+  function generateUserName(fullName) {
+    // Nettoyage : espaces -> points, minuscule
+    const cleanName = fullName.toLowerCase().replace(/\s+/g, '.');
+    const randomSuffix = Math.floor(Math.random() * 1000);
+    return `${cleanName}.${randomSuffix}`;
+  }
+
+  function generateEmail(username) {
+    return `${username}@soltani-a.ai`; // Branding Perso
+  }
+
+  // --- 2. Générateurs de Localisation (Malaysian Context) ---
+
+  function generateMalaysianAddress() {
+    // Adresse crédible à Kuala Lumpur (KLCC Area)
+    return {
+      street: "Jalan Pinang",
+      suite: "Level 23, Menara Soltani",
+      city: "Kuala Lumpur",
+      zipcode: "50450",
+      geo: {
+        lat: "3.1516",
+        lng: "101.7123"
+      }
+    };
+  }
+
+  function generateMalaysianPhone() {
+    // Format mobile Malaisien : +60 1x-xxxx xxxx
+    const randomPart = Math.floor(Math.random() * 8999999) + 1000000;
+    return `+60 12-${randomPart}`; 
+  }
+
+  // --- 3. Exécution et Injection des Variables ---
+
+  const fullName = generateFullName();
+  const userName = generateUserName(fullName);
+  const email = generateEmail(userName);
+  const address = generateMalaysianAddress();
+  const phone = generateMalaysianPhone();
+
+  // Identité
+  bru.setVar("name", fullName);
+  bru.setVar("username", userName);
+  bru.setVar("email", email);
+
+  // Adresse & Phone
+  bru.setVar("street", address.street);
+  bru.setVar("suite", address.suite);
+  bru.setVar("city", address.city);
+  bru.setVar("zipcode", address.zipcode);
+  bru.setVar("lat", address.geo.lat);
+  bru.setVar("lng", address.geo.lng);
+  bru.setVar("phone", phone);
+
+  // Branding Soltani-A (Statique)
+  bru.setVar("website", "soltani-a.ai");
+  bru.setVar("companyName", "Soltani-A");
+  bru.setVar("companyCatchPhrase", "Innovating DevOps Intelligence");
+  bru.setVar("companyBs", "AI-driven infrastructure automation");
+}
+
+script:post-response {
+  // --- Showcase Skill: Chaining ---
+  // On récupère l'ID créé par l'API pour les tests suivants (ex: PATCH/DELETE)
+  
+  if (res.body.id) {
+    bru.setVar("newUserId", res.body.id);
+    console.log(`[Showcase Info] Created new user with ID: ${res.body.id}`);
+  }
+}
+
+tests {
+  test("Status code is 201 Created", function() {
+    expect(res.getStatus()).to.equal(201);
+  });
+
+  test("Response body matches generated name", function() {
+    const sentName = bru.getVar("name");
+    expect(res.getBody().name).to.equal(sentName);
+  });
+
+  test("Company is correctly branded", function() {
+    expect(res.getBody().company.name).to.equal("Soltani-A");
+  });
+}

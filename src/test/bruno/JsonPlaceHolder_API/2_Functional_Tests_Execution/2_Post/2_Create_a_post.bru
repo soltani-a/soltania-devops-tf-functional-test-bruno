@@ -1,11 +1,11 @@
 meta {
-  name: Create an album
+  name: 2_Create_a_post
   type: http
   seq: 2
 }
 
 post {
-  url: {{url}}/{{albums_path_root}}
+  url: {{url}}/{{post_path_root}}
   body: json
   auth: inherit
 }
@@ -16,14 +16,15 @@ headers {
 
 body:json {
   {
-      "userId": {{userId}},
-      "title": "a new albums"
-    }
+    "title": "foo",
+    "body": "bar",
+    "userId": {{userId}}
+  }
 }
 
 script:post-response {
-  const albumId = res.body.id;
-  bru.setEnvVar( "albumId", albumId);
+  const postId = res.body.id;
+  bru.setEnvVar( "postId", postId);
 }
 
 settings {

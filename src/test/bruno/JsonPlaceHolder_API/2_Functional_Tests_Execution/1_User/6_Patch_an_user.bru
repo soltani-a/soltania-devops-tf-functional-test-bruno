@@ -1,0 +1,75 @@
+meta {
+  name: 6_Patch_user_title
+  type: http
+  seq: 6
+}
+
+patch {
+  url: {{url}}/{{user_path_root}}/{{userId}}
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-type: application/json; charset=UTF-8
+}
+
+body:json {
+  {
+    "name": "{{nameWithTitle}}"
+  }
+}
+
+settings {
+  encodeUrl: true
+}
+
+script:pre-request {
+  // --- Showcase Strategy: Data Augmentation ---
+  
+  // Scénario : Promotion de l'utilisateur. 
+  // On ne remplace pas son nom, on l'ENRICHIT avec un titre.
+  
+  // 1. Récupération du nom original (généré à l'étape 2)
+  let originalName = bru.getVar("name");
+  
+  // Self-healing: Si le nom n'existe pas (test isolé), on en invente un.
+  if (!originalName) {
+    originalName = "Anonymous User";
+    console.log("[Showcase Info] No original name found. Using default.");
+  }
+
+  // 2. Sélection d'un titre aléatoire
+  const titles = ["- DevOps Lead", "- QA Automation", "- Site Reliability Engineer", "[Staff Engineer]"];
+  const randomTitle = titles[Math.floor(Math.random() * titles.length)];
+
+  // 3. Construction de la nouvelle valeur
+  const newName = `${originalName} ${randomTitle}`;
+  
+  // On sauvegarde pour la requête et la vérification
+  bru.setVar("nameWithTitle", newName);
+  bru.setVar("addedTitle", randomTitle); // Utile pour le test
+}
+
+tests {
+  // 1. Validation de succès
+  test("Status code is 200 OK", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  // 2. Validation que le nom a bien été enrichi
+  test("Name includes the new professional title", function() {
+    const expectedName = bru.getVar("nameWithTitle");
+    expect(res.getBody().name).to.equal(expectedName);
+  });
+
+  // 3. Validation intelligente (Showcase Skill)
+  test("Original name is still present inside the new string", function() {
+    // On prouve qu'on n'a pas écrasé l'identité de l'user, juste modifiée.
+    // Attention : on récupère le 'name' original s'il existe dans les vars
+    const originalName = bru.getVar("name");
+    if (originalName) {
+        expect(res.getBody().name).to.include(originalName);
+    }
+  });
+}

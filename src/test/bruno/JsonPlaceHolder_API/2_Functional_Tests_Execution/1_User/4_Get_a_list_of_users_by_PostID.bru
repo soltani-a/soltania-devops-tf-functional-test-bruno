@@ -1,0 +1,81 @@
+meta {
+  name: 4_Get_a_list_of_users_by_PostID
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{url}}/{{user_path_root}}
+  body: none
+  auth: inherit
+}
+
+params:query {
+  postId: {{postId}}
+}
+
+script:pre-request {
+  // --- Showcase Skill: Robustesse & Self-Healing ---
+  
+  // Vérifie si la variable 'postId' existe déjà (issue d'un test précédent)
+  // Sinon, on en génère une valide pour que ce test puisse tourner en "standalone"
+  
+  let currentPostId = bru.getVar("postId");
+  
+  if (!currentPostId) {
+    // JSONPlaceholder a 100 posts, on en prend un au hasard
+    const randomPostId = Math.floor(Math.random() * 100) + 1;
+    bru.setVar("postId", randomPostId);
+    console.log(`[Showcase Info] No postId provided. Using random default: ${randomPostId}`);
+  } else {
+    console.log(`[Showcase Info] Using existing postId: ${currentPostId}`);
+  }
+}
+
+script:post-response {
+  // --- Showcase Skill: Data Extraction ---
+  
+  // Si la requête retourne des résultats, on sauvegarde le premier User ID
+  // Cela peut servir si le test suivant veut "Modifier l'auteur de ce post"
+  const body = res.getBody();
+  if (Array.isArray(body) && body.length > 0) {
+    bru.setVar("fetchedUserId", body[0].id);
+  }
+}
+
+tests {
+  // 1. Validation Standard
+  test("Status code is 200 OK", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  // 2. Validation de Structure (Type Checking)
+  test("Response should be an Array", function() {
+    expect(res.getBody()).to.be.an('array');
+  });
+  
+  test("Response should not be empty", function() {
+    expect(res.getBody().length).to.be.greaterThan(0);
+  });
+  
+  // 3. Validation de Schema de Données (Data Integrity)
+  test("First user has valid structure", function() {
+    const users = res.getBody();
+    if (users.length > 0) {
+      const user = users[0];
+      expect(user).to.have.property('id');
+      expect(user).to.have.property('username');
+      expect(user).to.have.property('email');
+      expect(user).to.have.property('address');
+    }
+  });
+  
+  // 4. Validation de Performance (Showcase Skill)
+  test("Response time is acceptable (< 500ms)", function() {
+    expect(res.getResponseTime()).to.be.below(500);
+  });
+}
+
+settings {
+  encodeUrl: true
+}
