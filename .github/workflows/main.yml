@@ -1,7 +1,7 @@
-name: Run Bruno CLI Collection with Approval
+name: 🚀 Run Bruno CLI Collection
 
 on:
-  workflow_dispatch:  # Enables manual execution from the GitHub UI
+  workflow_dispatch:  # Permet de lancer manuellement depuis l'interface GitHub
   push:
     branches:
       - main
@@ -10,15 +10,20 @@ on:
       - main
       - develop
 
-permissions:  # Ajouter cette section pour configurer les permissions globales
-  id-token: write
+permissions:
   contents: read
+  # id-token: write # À activer UNIQUEMENT si tu te connectes à AWS/Azure via OIDC. Pour Bruno/Sonar, c'est souvent inutile.
 
 jobs:
-    
-  nodejs-workflow:
+  # J'ai renommé le job pour qu'il soit plus clair dans l'interface GitHub Actions
+  bruno-api-tests:
+    name: 🧪 Bruno API Validation
+    # Appel de ton template centralisé (Très bonne pratique Showcase !)
     uses: soltani-a/soltania-devops-github-actions-templates-prototype/.github/workflows/nodejs-ci-template.yml@main
     secrets: inherit
     with:
       node-version: '20'
-      working-directory: ''
+      # ⚠️ CORRECTION CRITIQUE ICI :
+      # Ne laisse pas vide ''. Utilise '.' pour dire "répertoire courant".
+      # Vide peut causer des erreurs de chemin ou pointer vers la racine du système.
+      working-directory: '.'
