@@ -1,0 +1,45 @@
+meta {
+  name: 8_Delete_a_post
+  type: http
+  seq: 8
+}
+
+delete {
+  url: {{url}}/{{post_path_root}}/{{postId}}
+  body: none
+  auth: inherit
+}
+
+script:pre-request {
+  // --- Showcase Strategy: Safe Cleanup ---
+  
+  // 1. Self-Healing
+  let targetId = bru.getVar("postId");
+
+  if (!targetId) {
+    // Si lancé isolément, on cible le post 1 (safe sur un mock)
+    bru.setVar("postId", 1);
+    console.warn("[Showcase Warning] No postId to delete. Defaulting to ID 1.");
+  } else {
+    console.log(`[Showcase Info] Deleting Post ID: ${targetId}`);
+  }
+}
+
+tests {
+  // 1. Validation de Statut
+  test("Status code is 200 OK", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  // 2. Validation de réponse vide
+  test("Response body is empty", function() {
+    // Standard REST : un delete réussi renvoie souvent un objet vide
+    expect(res.getBody()).to.be.an('object');
+    expect(Object.keys(res.getBody()).length).to.equal(0);
+  });
+
+  // 3. Performance
+  test("Deletion took less than 1s", function() {
+    expect(res.getResponseTime()).to.be.below(1000);
+  });
+}

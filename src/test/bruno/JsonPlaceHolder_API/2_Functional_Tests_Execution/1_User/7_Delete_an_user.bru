@@ -1,0 +1,44 @@
+meta {
+  name: 7_Delete_an_user
+  type: http
+  seq: 7
+}
+
+delete {
+  url: {{url}}/{{user_path_root}}/{{userId}}
+  body: none
+  auth: inherit
+}
+
+script:pre-request {
+  // --- Showcase Strategy: Safe Cleanup & Idempotency ---
+  
+  // 1. Self-Healing
+  let targetId = bru.getVar("userId");
+
+  if (!targetId) {
+    // Si lancé isolément, on cible l'ID 1 (safe sur un mock)
+    bru.setVar("userId", 1);
+    console.warn("[Showcase Warning] No userId to delete. Defaulting to ID 1.");
+  } else {
+    console.log(`[Showcase Info] Deleting User ID: ${targetId}`);
+  }
+}
+
+tests {
+  // 1. Validation de Statut
+  test("Status code is 200 OK", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  // 2. Validation de réponse vide
+  test("Response body is empty", function() {
+    expect(res.getBody()).to.be.an('object');
+    expect(Object.keys(res.getBody()).length).to.equal(0);
+  });
+
+  // 3. Performance
+  test("Deletion took less than 1s", function() {
+    expect(res.getResponseTime()).to.be.below(1000);
+  });
+}

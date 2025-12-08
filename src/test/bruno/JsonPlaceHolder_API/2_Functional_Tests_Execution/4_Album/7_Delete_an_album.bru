@@ -1,0 +1,55 @@
+meta {
+  name: 7_Delete_an_album
+  type: http
+  seq: 7
+}
+
+delete {
+  url: {{url}}/{{albums_path_root}}/{{albumId}}
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}
+
+script:pre-request {
+  // --- Showcase Strategy: Safety & Idempotency ---
+  
+  // 1. Correction de l'URL cible
+  // On s'assure qu'on tape bien sur /albums/ID et pas sur /users/ID
+  // (L'erreur était dans l'URL du script original)
+
+  // 2. Self-Healing
+  let targetId = bru.getVar("albumId");
+
+  if (!targetId) {
+    // Si pas d'ID (test isolé), on simule sur l'ID 1
+    // JSONPlaceholder ne supprime rien vraiment, c'est sans danger.
+    bru.setVar("albumId", 1);
+    console.warn("[Showcase Warning] No albumId to delete. Defaulting to ID 1.");
+  } else {
+    console.log(`[Showcase Info] Deleting Album ID: ${targetId}`);
+  }
+}
+
+tests {
+  // 1. Validation de Statut
+  test("Status code is 200 OK", function() {
+    // JSONPlaceholder renvoie 200 (d'autres API renvoient 204 No Content)
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  // 2. Validation de confirmation
+  test("Response body is empty", function() {
+    // Une suppression réussie renvoie un objet vide {}
+    expect(res.getBody()).to.be.an('object');
+    expect(Object.keys(res.getBody()).length).to.equal(0);
+  });
+
+  // 3. Performance
+  test("Deletion took less than 1s", function() {
+    expect(res.getResponseTime()).to.be.below(1000);
+  });
+}
