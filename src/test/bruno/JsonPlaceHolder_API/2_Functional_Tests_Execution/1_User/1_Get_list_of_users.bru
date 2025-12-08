@@ -10,10 +10,6 @@ get {
   auth: inherit
 }
 
-settings {
-  encodeUrl: true
-}
-
 script:post-response {
   // --- Showcase Skill: Test Data Bootstrapping ---
   
@@ -56,7 +52,6 @@ tests {
   test("Users have correct properties (id, name, email)", function() {
     const users = res.getBody();
     // On vérifie le premier élément pour s'assurer que le format est bon
-    // (Pas besoin de boucler sur tout le tableau pour une vitrine)
     const user = users[0];
     
     expect(user).to.have.property('id').that.is.a('number');
