@@ -54,3 +54,23 @@ tests {
     expect(post).to.have.property('body').that.is.a('string');
   });
 }
+
+docs {
+  # 🚀 Workflow Entry Point: Blog Posts
+  
+  This request initializes the testing suite for the **Posts Module** (Technical Blog).
+  
+  ## 🔗 Data Chaining Strategy
+  To ensure the robustness of the following tests, we avoid using hardcoded IDs. Instead, we extract valid data directly from the API response.
+  
+  The `post-response` script captures two critical pieces of information:
+  1. **existingPostId**: Used to validate `GET`, `PUT`, and `PATCH` operations on a real resource.
+  2. **relatedUserId**: Used to validate relational integrity (e.g., fetching all posts belonging to a specific author).
+  
+  > **Dependency Note:** This bootstrap step prevents "404 Not Found" errors in subsequent tests by guaranteeing the ID exists on the server.
+  
+  ## ✅ Quality Gates
+  * **Status**: 200 OK.
+  * **Structure**: Verifies the response is a non-empty Array.
+  * **Schema**: Validates the standard Post object model (`id`, `userId`, `title`, `body`).
+}

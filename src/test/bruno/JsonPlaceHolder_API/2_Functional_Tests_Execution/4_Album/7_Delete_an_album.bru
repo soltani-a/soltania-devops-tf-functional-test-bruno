@@ -49,3 +49,24 @@ tests {
     expect(res.getResponseTime()).to.be.below(1000);
   });
 }
+
+docs {
+  # 🗑️ Scenario: Digital Asset Removal (Cleanup)
+
+  This request concludes the Album lifecycle workflow by simulating the **Decommissioning** of a technical document/asset.
+
+  ## 🧹 Technical Goal: Environment Hygiene
+  In a professional CI/CD pipeline, "cleaning up after yourself" is critical to prevent:
+  * **State Leakage**: Ensuring subsequent test runs start with a clean slate.
+  * **Database Bloat**: Removing temporary test data generated during execution.
+
+  ## 🛡️ Robustness & Safety
+  The `pre-request` script implements a **Safe Failover** strategy to prevent pipeline brittleness:
+  * **Context Check**: It attempts to retrieve the `albumId` used in previous steps.
+  * **Fallback**: If the test runs in isolation (variable undefined), it defaults to `ID: 1`. This ensures the cleanup step never causes a "Red Build" due to a missing variable, which is a common CI/CD anti-pattern.
+
+  ## ✅ Quality Gates
+  * **Status**: 200 OK.
+  * **REST Compliance**: Validates that the API acknowledges the deletion by returning an **Empty JSON Object** `{}`, confirming the resource has been purged.
+  * **Performance**: Strict SLA (< 1000ms).
+}

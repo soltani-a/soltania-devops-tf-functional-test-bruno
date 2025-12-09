@@ -65,3 +65,23 @@ tests {
     }
   });
 }
+
+docs {
+  # 🔀 Scenario: QA Handoff (Partial Update)
+
+  This request simulates a workflow transition: the resolved ticket is reassigned to a **QA Manager** for final verification.
+
+  ## 💡 Technical Insight: The "PATCH" Contract
+  This test verifies the specific behavior of HTTP `PATCH`: **Modification without Replacement**.
+  * **The Action**: We send *only* a new `email` address.
+  * **The Expectation**: All other fields (specifically the `name` field updated in the previous `PUT` step with the `[RESOLVED]` tag) must remain unchanged.
+
+  ## ⚙️ Workflow Logic
+  1. **Role Transition**: The `pre-request` script generates a dynamic `qa-manager` identity under the corporate domain (`@soltani-a.ai`).
+  2. **State Preservation**: Unlike the previous step where we had to send the whole object, here we test the API's ability to merge the delta.
+
+  ## ✅ Quality Gates
+  * **Status**: 200 OK.
+  * **Update Verification**: Confirms the contact email is updated.
+  * **Non-Regression**: Crucially asserts that the `name` field still contains `[RESOLVED]`, proving that the partial update did not inadvertently reset the resource state.
+}

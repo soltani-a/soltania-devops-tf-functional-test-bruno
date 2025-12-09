@@ -43,3 +43,22 @@ tests {
     expect(res.getResponseTime()).to.be.below(1000);
   });
 }
+
+docs {
+  # 🗑️ Scenario: Content Removal (Cleanup)
+
+  This request concludes the Blog Post lifecycle by removing the created resource.
+
+  ## 🧹 Technical Goal: Environment Hygiene
+  In automated testing, ensuring data cleanup is crucial to prevent "state leakage" between test runs, which can lead to false positives or database bloat.
+
+  ## 🛡️ Robustness Strategy
+  The `pre-request` script implements a **Safe Failover** mechanism:
+  * **Context Check**: It attempts to retrieve the `postId` manipulated in previous steps.
+  * **Fallback**: If the test is executed in isolation (no ID in memory), it defaults to `ID: 1`. This ensures the HTTP call completes successfully without breaking the pipeline, while acknowledging the limitations of the Mock API (which doesn't actually delete the persistent data).
+
+  ## ✅ Quality Gates
+  * **Status**: 200 OK.
+  * **Standard REST Compliance**: Validates that the server acknowledges the deletion by returning an **Empty JSON Object** `{}`, confirming the operation was processed.
+  * **Performance**: Strict SLA (< 1000ms).
+}

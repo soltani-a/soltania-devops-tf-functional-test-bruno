@@ -65,3 +65,24 @@ tests {
     expect(res.getBody().userId).to.equal(expectedUserId);
   });
 }
+
+docs {
+  # 🔄 Scenario: Editorial Approval (Full Resource Update)
+
+  This request simulates a critical step in the Content Lifecycle: the **Editorial Review**. A draft post is reviewed, validated, and updated with an official "Approved" status.
+
+  ## 💡 Technical Insight: PUT Semantics
+  This test demonstrates strict adherence to RESTful standards for **PUT** operations (Idempotent Full Replacement):
+  * **The Challenge**: Unlike `PATCH`, a `PUT` request replaces the *entire* resource. Omitting fields (like `userId`) would result in data loss or broken foreign keys.
+  * **The Implementation**: The request payload explicitly includes the original `id` and `userId` alongside the updated content to preserve data integrity.
+
+  ## ✨ Dynamic Content Generation
+  The `pre-request` script simulates a corporate validation workflow:
+  1. **Audit Trail**: Generates a random reference ID (`#9000+`).
+  2. **Branding**: Updates the title with an `[APPROVED]` tag and rewrites the body to reference the *Soltani-A DevOps Center of Excellence*.
+
+  ## ✅ Quality Gates
+  * **Status**: 200 OK.
+  * **Business Logic**: Verifies the content now reflects the "Approved" status.
+  * **Data Integrity**: Crucially asserts that the **Foreign Key** (`userId`) is preserved after the full update, ensuring the post remains linked to its author.
+}

@@ -61,3 +61,30 @@ tests {
     expect(res.getResponseTime()).to.be.below(500);
   });
 }
+
+docs {
+  # 🔍 Scenario: Album Filtering (Data Isolation)
+
+  This request validates the filtering logic for the **Albums** resource, ensuring that specific subsets of digital assets can be retrieved based on ownership.
+
+  ## ✨ Technical Highlights
+
+  ### 1. Logical Data Consistency
+  This test explicitly respects the entity relationship (ERD) of the underlying system:
+  * **The Context**: Albums are child entities of **Users** (not Posts).
+  * **The Query**: The request filters explicitly by `userId` to validate the correct parent-child relationship.
+
+  ### 2. Deep Filter Validation (Iterative Check)
+  This test implements a **Strict Isolation Check**:
+  * **The Risk**: A buggy API might ignore the query parameter and return *all* albums (Data Leakage).
+  * **The Solution**: The test loops through the **entire response array** to verify that every single album returned matches the requested `userId`.
+
+  ### 3. Robustness
+  * **Self-Healing**: If the test is executed without a loaded context (e.g., specific User ID), it defaults to `ID: 1` to ensure the filter logic can still be validated.
+
+  ## ✅ Quality Gates
+  * **Status**: 200 OK.
+  * **Structure**: Response must be a **Non-Empty Array**.
+  * **Filter Integrity**: 100% of returned items match the requested User ID.
+  * **Performance**: Search query SLA < 500ms.
+}

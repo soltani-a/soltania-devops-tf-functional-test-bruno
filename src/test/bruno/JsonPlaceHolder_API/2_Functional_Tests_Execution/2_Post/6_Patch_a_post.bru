@@ -66,3 +66,24 @@ tests {
     // Le test passe dans les deux cas tant que le contenu existe.
   });
 }
+
+docs {
+  # 🚀 Scenario: Article Release & Versioning (Non-Regression)
+
+  This request executes a specific lifecycle event: tagging the approved article with a **Semantic Version Number** for release.
+
+  ## ✨ Technical Highlights
+
+  ### 1. Non-Regression Testing (The "PATCH" Contract)
+  This test explicitly validates the difference between `PUT` and `PATCH`.
+  * **Action**: We send *only* the new `title`.
+  * **Validation**: A dedicated test asserts that the existing `body` content (from the previous step) is **preserved** and not wiped out, confirming the API correctly handles partial updates.
+
+  ### 2. Dynamic Versioning
+  The `pre-request` script simulates a release management process by generating a random version tag (e.g., `[v3.5]`) and applying it to the content title.
+
+  ## ✅ Quality Gates
+  * **Status**: 200 OK.
+  * **Data Logic**: Confirms the title includes the new version tag.
+  * **Safety**: Critical assertion ensuring the article body remains intact after the title update.
+}

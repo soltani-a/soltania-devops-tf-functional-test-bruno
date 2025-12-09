@@ -64,3 +64,25 @@ tests {
     expect(res.getBody().postId).to.equal(expectedPostId);
   });
 }
+
+docs {
+  # 🎫 Scenario: Support Ticket Resolution (Full Update)
+
+  This request simulates a "Helpdesk" workflow where a reported issue (comment) is processed and closed by the technical support team.
+
+  ## 💡 Technical Insight: Full Resource Replacement (PUT)
+  This test validates the strict behavior of the `PUT` method:
+  * **The Rule**: A PUT request replaces the *entire* resource state.
+  * **The Implementation**: To prevent data loss (orphaning the comment), the payload explicitly re-sends the `postId` and `id` alongside the modified content.
+
+  ## 🏗️ Workflow Simulation
+  The `pre-request` script transforms the user's comment into an official response:
+  1. **Status Change**: Prepends `[RESOLVED]` to the comment name.
+  2. **Ownership Change**: Reassigns the author email to `support-team@soltani-a.ai`.
+  3. **Content**: Updates the body with a technical resolution message.
+
+  ## ✅ Quality Gates
+  * **Status**: 200 OK.
+  * **Business Logic**: Confirms the comment is marked as `[RESOLVED]` and attributed to the Support Team.
+  * **Data Integrity**: Critical assertion ensuring the **Foreign Key** (`postId`) remains consistent after the update.
+}

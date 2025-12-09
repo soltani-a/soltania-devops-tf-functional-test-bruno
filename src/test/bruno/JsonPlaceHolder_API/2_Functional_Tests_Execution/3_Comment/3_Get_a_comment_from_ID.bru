@@ -60,3 +60,21 @@ tests {
     expect(res.getResponseTime()).to.be.below(500);
   });
 }
+
+docs {
+  # 🧪 Scenario: Specific Comment Retrieval (Mock Handling)
+
+  This request demonstrates how to handle **Mock API Limitations** when testing a retrieval endpoint immediately after a creation.
+
+  ## 🧠 Technical Highlight: The "Mock Paradox"
+  Since **JsonPlaceholder** does not persist data created via `POST`, fetching the ID generated in the previous step (e.g., `501`) would result in a `404 Not Found`.
+  * **Strategy**: The `pre-request` script ignores the ID from Step 2 and instead targets `existingCommentId` (a real ID captured during the initialization step).
+
+  ## 🛡️ Robustness & Self-Healing
+  * **Context Awareness**: If the test is run in isolation (meaning `existingCommentId` is undefined), the script automatically defaults to `ID: 1`. This ensures the test remains green regardless of the execution context.
+
+  ## ✅ Quality Gates
+  * **Status**: 200 OK.
+  * **Data Integrity**: Verifies the returned ID matches the requested ID.
+  * **Format Validation**: Uses a **Regex Pattern** to strictly validate the email format of the commenter.
+}

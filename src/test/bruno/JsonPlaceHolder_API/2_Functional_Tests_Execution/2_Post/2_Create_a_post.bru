@@ -81,3 +81,28 @@ tests {
     expect(res.getBody().userId).to.equal(expectedUserId);
   });
 }
+
+docs {
+  # 🚀 Scenario: Tech Blog Publication (Dynamic Content)
+
+  This request simulates the publication of a new article on the **Soltani-A Tech Blog**. It demonstrates the ability to generate context-aware, industry-relevant content dynamically rather than using static placeholders.
+
+  ## ✨ Technical Highlights
+
+  ### 1. Dynamic Content Generation
+  The `pre-request` script replaces generic "foo/bar" data with realistic DevOps topics:
+  * **Topics**: Randomly selects from Kubernetes, Terraform, Bruno, or GitHub Actions.
+  * **Context**: Auto-generates a title (`[Tech Blog] ...`) and a matching body summary.
+
+  ### 2. Runtime Variable Scope (Clean Git)
+  * **Best Practice**: Uses `bru.setVar` to store the `newPostId` in memory for subsequent tests.
+  * **Avoidance**: Deliberately avoids `setEnvVar` to prevent modifying the `environments/*.bru` file, ensuring the repository remains clean and stateless in CI/CD.
+
+  ### 3. Robustness (Self-Healing)
+  * Checks if a `userId` is available from previous steps. If run in isolation, defaults to ID 1 to prevent failure.
+
+  ## ✅ Quality Gates
+  * **Status**: 201 Created.
+  * **Data Integrity**: Verifies the API response matches the dynamically generated title.
+  * **Relational Integrity**: Confirms the post is correctly linked to the author (`userId`).
+}

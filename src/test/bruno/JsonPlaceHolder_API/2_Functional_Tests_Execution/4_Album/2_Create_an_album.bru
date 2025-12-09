@@ -81,3 +81,28 @@ tests {
     expect(res.getBody().userId).to.equal(expectedUserId);
   });
 }
+
+docs {
+  # 📂 Scenario: Digital Asset Management (Dynamic Creation)
+
+  This request simulates the creation of a new **Documentation Album** within the system. It demonstrates how to generate semantically relevant data for specific business domains (DevOps/Infrastructure).
+
+  ## ✨ Technical Highlights
+
+  ### 1. Semantic Data Generation
+  The `pre-request` script moves away from generic strings to generate **Domain-Specific Content**:
+  * **Topics**: Randomly selects infrastructure themes (AWS Topology, K8s Logs, CI/CD Pipelines).
+  * **Versioning**: Appends the current year and corporate branding (`Soltani-A`) to the title.
+
+  ### 2. State Hygiene (Runtime Variables)
+  * **Best Practice**: The script captures the returned `id` into `newAlbumId` using `bru.setVar` (session memory).
+  * **Anti-Pattern Avoidance**: It explicitly avoids modifying the persistent environment file (`setEnvVar`), ensuring the repository remains stateless and clean during CI runs.
+
+  ### 3. Robustness
+  * **Self-Healing**: Checks for a valid parent `userId`. If missing, it defaults to a safe fallback (ID: 1) to prevent the test from crashing in isolation.
+
+  ## ✅ Quality Gates
+  * **Status**: 201 Created.
+  * **Echo Verification**: Validates that the title persisted by the API matches the dynamically generated string.
+  * **Relational Integrity**: Confirms the album is successfully linked to the correct User entity.
+}

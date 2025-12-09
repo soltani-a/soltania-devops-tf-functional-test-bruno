@@ -59,3 +59,23 @@ tests {
     expect(res.getResponseTime()).to.be.below(500);
   });
 }
+
+docs {
+  # 🧪 Scenario: Single Album Retrieval (Mock Handling)
+
+  This request demonstrates how to handle **Non-Persistent Mock APIs** in an automated test suite.
+
+  ## 🧠 Technical Highlight: The "Phantom Resource" Problem
+  In a standard CRUD flow, we would fetch the resource created in the previous step. However, **JsonPlaceholder** does not persist new resources:
+  * **The Issue**: Fetching the Album ID returned by the creation step (e.g., `101`) would return a `404`.
+  * **The Solution**: The script intelligently redirects the request to `existingAlbumId`, a real resource ID captured during the initialization phase.
+
+  ## 🛡️ Robustness & Self-Healing
+  * **Context Awareness**: The script detects if it's running in a full sequence or in isolation.
+  * **Fallback Mechanism**: If `existingAlbumId` is undefined, it defaults to `ID: 1` to ensure the test passes and validates the schema, regardless of the execution context.
+
+  ## ✅ Quality Gates
+  * **Status**: 200 OK.
+  * **Data Consistency**: Verifies that the returned object ID matches the requested ID.
+  * **Schema Validation**: Checks for the presence and type of critical fields (`title`, `userId`).
+}
