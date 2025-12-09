@@ -6,7 +6,8 @@
   "type": "module", 
   "scripts": {
     "test": "cd src/test/bruno/JsonPlaceHolder_API && bru run --env JsonPlaceHolder_Environment",
-    "lint": "eslint . --fix || echo 'No JavaScript files to lint.'"
+    "lint": "eslint . --fix || echo 'No JavaScript files to lint.'",
+    "deploy": "bash scripts/quick-deploy.sh"
   },
   "dependencies": {
     "@usebruno/cli": "^1.0.0"

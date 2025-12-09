@@ -58,3 +58,21 @@ tests {
     expect(album).to.have.property('title').that.is.a('string');
   });
 }
+
+docs {
+  # 🚀 Workflow Entry Point: Albums Module
+
+  This request initializes the testing suite for the **Albums / Digital Assets Module**.
+
+  ## 🔗 Data Chaining Strategy
+  To ensure the robustness of the following tests, this request performs **Dynamic Data Extraction**:
+  1. **existingAlbumId**: Captures a real Album ID to validate `GET (by ID)` and `PUT/PATCH` operations.
+  2. **relatedUserId**: Captures the Owner ID to validate relational integrity (Foreign Key checks) in later tests.
+
+  > **Dependency Note:** This bootstrap step prevents "404 Not Found" errors in subsequent tests by guaranteeing the ID exists on the server.
+
+  ## ✅ Quality Gates
+  * **Status**: 200 OK.
+  * **Performance**: Strict SLA (< 500ms).
+  * **Schema**: Validates data types (`id` is number, `title` is string) to ensure contract compliance.
+}

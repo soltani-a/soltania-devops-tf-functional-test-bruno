@@ -69,3 +69,23 @@ tests {
     }
   });
 }
+
+docs {
+  # 📈 Scenario: Internal Promotion (Data Augmentation)
+
+  This request simulates a career progression event: the user receives a **promotion**. Instead of replacing the user's identity, we **augment** existing data.
+
+  ## 🎨 Technical Feature: Dynamic String Manipulation
+  The `pre-request` script demonstrates how to modify state based on previous context:
+  1. **Retrieval**: Fetches the `originalName` generated in Step 2.
+  2. **Augmentation**: Appends a random professional title (e.g., *"- DevOps Lead"*, *"[Staff Engineer]"*) to the existing string.
+  3. **Injection**: Sends only the modified field via `PATCH`.
+
+  ## 🛡️ Robustness
+  * **Self-Healing**: If the test runs in isolation (no original name in memory), it defaults to "Anonymous User" to prevent concatenation errors.
+
+  ## ✅ Quality Gates
+  * **Status**: 200 OK.
+  * **Data Integrity**: Validates that the new name strictly equals the expected formatted string.
+  * **Smart Assertion**: Specifically checks that the **Original Identity** is preserved within the new string (e.g., *"Sophie Martin"* is still inside *"Sophie Martin - DevOps Lead"*).
+}

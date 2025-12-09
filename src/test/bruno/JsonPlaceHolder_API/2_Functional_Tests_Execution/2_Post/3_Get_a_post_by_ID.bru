@@ -58,3 +58,23 @@ tests {
     expect(res.getResponseTime()).to.be.below(500);
   });
 }
+
+docs {
+  # 🧪 Scenario: Post Retrieval & Environment Adaptation
+
+  This request validates the ability to fetch a specific blog post by its unique identifier.
+
+  ## 🧠 Technical Highlight: The "Mock Paradox"
+  In a real-world scenario, we would verify the Post created in the previous step. However, **JsonPlaceholder** is a stateless mock API (creates are not persisted).
+  * **Problem**: Fetching the ID returned by the `POST` request (e.g., `101`) results in a `404 Not Found`.
+  * **Solution**: The `pre-request` script intelligently pivots to `existingPostId` (a known valid ID captured in Step 1).
+
+  ## 🛡️ Robustness Strategy
+  * **Self-Healing**: The script checks if a valid target ID is available in the runtime variables. If running in isolation (variable undefined), it automatically defaults to `ID: 1` to ensure the test passes.
+
+  ## ✅ Quality Gates
+  * **Status**: 200 OK.
+  * **Data Consistency**: Ensures the API returns the exact resource requested (`requested_id === returned_id`).
+  * **Schema Validation**: Strictly checks types (`title` is string, `userId` is number).
+  * **Performance**: Strict SLA (< 500ms).
+}

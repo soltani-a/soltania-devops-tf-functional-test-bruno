@@ -57,3 +57,25 @@ tests {
     });
   });
 }
+
+docs {
+  # 🔍 Scenario: Comment Filtering Logic (Data Isolation)
+
+  This request validates the API's filtering capability by querying the `comments` resource using a specific `postId`.
+
+  ## ✨ Technical Highlights
+
+  ### 1. Deep Logic Validation (The "forEach" Test)
+  This test goes beyond basic status checks by implementing a **Data Integrity Loop**:
+  * **The Challenge**: A buggy API might ignore query parameters and return *all* comments (Data Leakage).
+  * **The Solution**: The test iterates through **every single item** in the response array to verify that `comment.postId` strictly equals the requested `postId`.
+
+  ### 2. Robustness (Self-Healing)
+  * **Context Management**: The script intelligently detects if `postId` is missing (e.g., during isolated execution).
+  * **Fallback**: It defaults to `Post ID: 1` to ensure the filter logic can still be validated without breaking the test runner.
+
+  ## ✅ Quality Gates
+  * **Status**: 200 OK.
+  * **Structure**: Response must be a **Non-Empty Array**.
+  * **Filter Integrity**: 100% of returned comments must belong to the requested Post (Zero leakage).
+}

@@ -55,3 +55,28 @@ tests {
     }
   });
 }
+
+docs {
+  # 🔗 Scenario: Nested Resource Retrieval
+
+  This request validates the API's ability to fetch relational data using a **Nested URL Pattern** (`/posts/:id/comments`).
+
+  ## ✨ Technical Highlights
+
+  ### 1. Relational Integrity Check
+  Instead of just checking for a successful response, this test performs a **Foreign Key Validation**:
+  * It verifies that the `postId` inside the returned comment objects matches the parent ID requested in the URL.
+  * This ensures the API routing logic is correct.
+
+  ### 2. Regex Pattern Matching
+  * **Data Quality**: Implements a Regular Expression check (`/^[^\s@]+@[^\s@]+\.[^\s@]+$/`) to ensure user emails are properly formatted.
+
+  ### 3. Robustness (Self-Healing)
+  * **Context Awareness**: Checks if a `postId` context exists. If run in isolation, it safely defaults to ID 1 to prevent a 404 error.
+
+  ## ✅ Quality Gates
+  * **Status**: 200 OK.
+  * **Structure**: Response is an Array.
+  * **Logic**: Comments strictly belong to the requested Post.
+  * **Format**: Emails match standard Regex patterns.
+}

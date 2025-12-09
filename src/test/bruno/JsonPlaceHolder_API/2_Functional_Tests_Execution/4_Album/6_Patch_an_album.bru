@@ -64,3 +64,24 @@ tests {
     }
   });
 }
+
+docs {
+  # 📢 Scenario: Asset Publication (Access Control Update)
+
+  This request simulates a governance workflow: changing the visibility of a technical document album from **Private/Draft** to **Public**.
+
+  ## 💡 Technical Insight: The "PATCH" Efficiency
+  This test highlights the efficiency of `PATCH` for granular updates:
+  * **The Action**: We transmit *only* the specific field changing state (`title`).
+  * **The Contract**: The server must update this field while strictly preserving all other existing data points (like ownership).
+
+  ## 🏗️ Dynamic Lifecycle Management
+  The `pre-request` script acts as a "Publisher":
+  1. **Versioning**: Increments the version number (e.g., `v1.4`).
+  2. **Tagging**: Appends the `[PUBLIC ACCESS]` marker to the title, signifying the asset is ready for general consumption.
+
+  ## ✅ Quality Gates
+  * **Status**: 200 OK.
+  * **State Change**: Verifies the title correctly reflects the new "Public" status.
+  * **Non-Regression**: Crucially asserts that the **Owner** (`userId`) remains attached to the album, ensuring the partial update didn't inadvertently wipe out related data.
+}

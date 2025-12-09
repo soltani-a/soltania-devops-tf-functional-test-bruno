@@ -79,3 +79,25 @@ tests {
     expect(email).to.include("@soltani-a.ai");
   });
 }
+
+docs {
+  # 🤖 Scenario: Automated Code Review (Feedback Loop)
+
+  This request simulates a CI/CD feedback event. Instead of generic "lorem ipsum", the script generates a realistic "Pull Request Review" comment from an automated bot or senior developer.
+
+  ## ✨ Technical Highlights
+
+  ### 1. Contextual Data Generation
+  The `pre-request` script constructs a specific narrative:
+  * **Persona**: Randomly selects a reviewer (e.g., *SonarQube Bot*, *Security Scanner*).
+  * **Content**: Generates a Pull Request ID and specific technical feedback.
+
+  ### 2. Runtime Scope Management
+  * **Best Practice**: The script strictly uses `bru.setVar` (Session Storage) to capture the `newCommentId`.
+  * **Why**: This avoids polluting the persistent `environments` file with transient test data, keeping the repository state clean.
+
+  ## ✅ Quality Gates
+  * **Status**: 201 Created.
+  * **Echo Verification**: Ensures the API correctly persisted the dynamically generated name.
+  * **Compliance**: Validates that the commenter's email adheres to the corporate domain policy (`@soltani-a.ai`).
+}

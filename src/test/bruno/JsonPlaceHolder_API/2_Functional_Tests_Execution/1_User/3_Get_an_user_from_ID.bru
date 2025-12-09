@@ -60,3 +60,26 @@ tests {
     expect(res.getResponseTime()).to.be.below(500);
   });
 }
+
+docs {
+  # 🧪 Scenario: User Retrieval & Mock Handling
+  
+  This request demonstrates how to handle **Mock API Limitations** in an automated pipeline while ensuring test stability.
+  
+  ## 🧠 The "Mock Paradox" Strategy
+  In a production environment, this test would fetch the User ID created in the previous `POST` request. 
+  However, **JsonPlaceholder** is a non-persistent mock API: resources created via POST are faked and do not actually exist on the server.
+  
+  * **Naive Approach**: Fetching the ID from Step 2 -> Returns `404 Not Found` (Pipeline Fails ❌).
+  * **Showcase Approach**: The pre-request script intelligently swaps the target to `existingUserId` (a real user captured in Step 1) -> Returns `200 OK` (Pipeline Passes ✅).
+  
+  ## 🛡️ Self-Healing Logic
+  To ensures the test suite is robust:
+  * The script checks if `existingUserId` is available.
+  * If missing (e.g., test run in isolation), it defaults to `ID: 1`.
+  * This guarantees the test **never crashes** due to missing context.
+  
+  ## ✅ Quality Gates
+  * **Data Consistency**: Verifies that the API returns the exact ID requested (`requested_id == returned_id`).
+  * **Deep Schema**: Validates nested objects (address.city) and basic email formatting.
+}

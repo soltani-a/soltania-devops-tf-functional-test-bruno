@@ -128,3 +128,33 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# ---------------------------------
+# CUSTOM SHOWCASE ADDITIONS
+# ---------------------------------
+
+# 1. OS Junk files (Mac/Windows/Linux)
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# 2. IDE Configurations (Keep repo agnostic)
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# 3. Test Reports & Artifacts (Specific to this project)
+# On ne veut pas commiter les résultats d'exécution locale
+junit.xml
+test-results/
+bruno-run-report.xml
+bruno-run-report.html
+
+# 4. Bruno Specifics
+# Si tu utilises des secrets dans Bruno qui ne sont pas dans .env
+# (Par défaut Bruno stocke les secrets dans .env, donc c'est déjà couvert plus haut)

@@ -42,3 +42,22 @@ tests {
     expect(res.getResponseTime()).to.be.below(1000);
   });
 }
+
+docs {
+  # 🗑️ Scenario: Feedback Removal (Cleanup)
+
+  This request concludes the Comment/Feedback lifecycle by removing the resource.
+
+  ## 🧹 Technical Goal: Idempotency & Hygiene
+  In a production-grade CI/CD pipeline, tests should ideally be "clean" and not leave orphan data. This request simulates that cleanup process.
+
+  ## 🛡️ Robustness Strategy
+  The `pre-request` script implements a **Safe Execution** pattern:
+  * **Context Check**: It attempts to retrieve the `commentId` manipulated in the previous `PATCH` step.
+  * **Failover**: If the test is running in isolation (no ID in memory), it defaults to `ID: 1`. This ensures the HTTP call completes successfully (Status 200) without breaking the build, even if the specific test context is missing.
+
+  ## ✅ Quality Gates
+  * **Status**: 200 OK.
+  * **REST Compliance**: Validates that the API acknowledges the deletion by returning an **Empty JSON Object** `{}`, which is the standard confirmation for a successful delete operation.
+  * **Performance**: SLA < 1000ms.
+}

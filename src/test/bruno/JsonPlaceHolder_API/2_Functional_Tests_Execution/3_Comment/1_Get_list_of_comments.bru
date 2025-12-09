@@ -60,3 +60,22 @@ tests {
     expect(res.getResponseTime()).to.be.below(1000);
   });
 }
+
+docs {
+  # 🚀 Workflow Entry Point: Comments Module
+
+  This request initializes the testing suite for the **Comments / Feedback Module**.
+
+  ## 🔗 Data Chaining Strategy
+  To ensure subsequent tests run against valid, existing data, this request performs **Dynamic Data Extraction**:
+
+  1. **existingCommentId**: Captures a real Comment ID to validate `GET (by ID)` and `PUT/PATCH` operations.
+  2. **relatedPostId**: Captures the parent Post ID to validate relational integrity (Foreign Key checks) in later tests.
+
+  > **Why?** This prevents brittle tests that rely on hardcoded IDs (which might be deleted or non-existent in a real env).
+
+  ## ✅ Quality Gates
+  * **Status**: 200 OK.
+  * **Data Quality**: Explicitly validates that the `email` field matches a regex pattern (contains `@`).
+  * **Schema**: Validates data types (`id` is number, `body` is string) to ensure contract compliance.
+}

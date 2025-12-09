@@ -62,3 +62,23 @@ tests {
     expect(res.getBody().id).to.equal(targetId);
   });
 }
+
+docs {
+  # 🔄 Scenario: Documentation Finalization (Full Update)
+
+  This request simulates a document lifecycle event: marking an infrastructure album as **Finalized** and ready for release.
+
+  ## 💡 Technical Insight: PUT Semantics (Full Replacement)
+  This test demonstrates strict adherence to RESTful standards for `PUT` operations.
+  * **The Constraint**: A `PUT` request replaces the resource entirely. Failing to include the `userId` would result in the Album becoming "orphaned" (losing its owner).
+  * **The Implementation**: To preserve data integrity, the payload explicitly re-sends the `id` and `userId` alongside the modified title.
+
+  ## ✨ Dynamic Content Generation
+  The `pre-request` script acts as a "Release Manager":
+  * **Versioning**: It appends the current year and the `[FINAL VALIDATION]` tag to the album title, simulating a formal audit approval process.
+
+  ## ✅ Quality Gates
+  * **Status**: 200 OK.
+  * **Business Logic**: Verifies the title now strictly contains the "FINAL VALIDATION" marker.
+  * **Data Integrity**: Crucially asserts that the **Foreign Key** (`userId`) and Primary Key (`id`) remain unchanged after the full update.
+}

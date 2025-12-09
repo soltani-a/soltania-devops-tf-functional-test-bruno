@@ -42,3 +42,24 @@ tests {
     expect(res.getResponseTime()).to.be.below(1000);
   });
 }
+
+docs {
+  # 🗑️ Scenario: Employee Offboarding (Cleanup)
+
+  This request concludes the User Lifecycle workflow by simulating an **Account Deletion**.
+
+  ## 🧹 Technical Goal: Test Data Management
+  In a real automated pipeline, "cleaning up after yourself" is a critical best practice to prevent:
+  * Database bloat.
+  * State leakage between test runs.
+  * False positives in subsequent unique-constraint tests.
+
+  ## 🛡️ Safety & Idempotency
+  The `pre-request` script implements a **Safe Failover** strategy:
+  * **Target**: Attempts to delete the `userId` manipulated in previous steps.
+  * **Fallback**: If run in isolation (no ID in memory), it defaults to `ID: 1` to ensure the HTTP call completes successfully without breaking the pipeline logic.
+
+  ## ✅ Quality Gates
+  * **Status**: 200 OK.
+  * **Standard REST Behavior**: Validates that the API acknowledges the deletion with an **Empty JSON Object** `{}` (or sometimes `204 No Content` in other APIs), confirming the resource is gone.
+}

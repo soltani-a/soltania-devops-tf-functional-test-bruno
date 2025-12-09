@@ -137,3 +137,35 @@ tests {
     expect(res.getBody().company.name).to.equal("Soltani-A");
   });
 }
+
+docs {
+  # 🚀 Scenario: Employee Onboarding (Dynamic Generation)
+  
+  This request simulates the onboarding of a new employee at **Soltania Technology**. Instead of using static JSON, this test leverages JavaScript to generate a unique, realistic profile for every execution.
+  
+  ## ✨ Key Technical Features
+  
+  ### 1. Dynamic Identity Generation (Pre-Request)
+  The script generates a completely random identity to ensure test variety and data uniqueness:
+  * **Multicultural Names**: Picks from a diverse list (Julie, Ahmad, Wei, Ravi...).
+  * **Consistent Credentials**: Generates a username and corporate email (`@soltani-a.ai`) derived from the full name.
+  
+  ### 2. Contextual Localization (Malaysia)
+  To demonstrate international support, the address logic simulates a location in **Kuala Lumpur**:
+  * **Address**: Jalan Pinang, Menara Soltani.
+  * **Geo**: Real coordinates for KLCC area.
+  * **Phone**: Valid Malaysian mobile format (`+60 1x...`).
+  
+  ### 3. Corporate Branding
+  Hardcoded values enforce the company identity:
+  * **Company**: Soltani-A
+  * **Catchphrase**: Innovating DevOps Intelligence
+  
+  ## 🔗 Data Chaining
+  The `post-response` script captures the **ID** returned by the API (e.g., `101`) and stores it in `newUserId`. This variable allows subsequent tests to interact with this specific "newly created" user.
+  
+  ## ✅ Quality Gates
+  * **Status**: 201 Created.
+  * **Data Integrity**: Verifies that the name returned by the API matches the dynamically generated name sent in the request.
+  * **Branding Check**: Ensures the company name is correctly recorded.
+}

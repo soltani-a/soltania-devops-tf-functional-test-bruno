@@ -60,3 +60,27 @@ tests {
     expect(user).to.have.property('company').that.is.an('object');
   });
 }
+
+docs {
+  # 🚀 Workflow Entry Point: User List
+  
+  This request serves two critical purposes for the automation suite:
+  1. **Functional Validation**: Ensures the user directory endpoint is available and performant.
+  2. **Data Bootstrapping**: It initializes test data for the rest of the collection.
+  
+  ## 🔗 Data Chaining Strategy
+  To avoid hardcoding IDs (which leads to brittle tests), the `post-response` script:
+  1. Fetches the dynamic list of users.
+  2. Extracts the **ID** of the first user found.
+  3. Stores it in the runtime variable `existingUserId`.
+  
+  > **Dependency Note:** > This variable `existingUserId` is required by subsequent tests:
+  > * `3_Get_an_user_from_ID`
+  > * `5_Update_an_user`
+  > * `7_Delete_an_user`
+  
+  ## ✅ Quality Gates
+  * **Status**: 200 OK
+  * **Performance**: Strict SLA (< 1000ms)
+  * **Schema**: Deep validation of data types (ID is Number, Email is String, Company is Object).
+}

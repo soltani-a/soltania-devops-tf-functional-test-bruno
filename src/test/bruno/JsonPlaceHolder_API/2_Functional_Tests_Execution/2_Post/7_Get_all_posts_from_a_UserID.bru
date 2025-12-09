@@ -60,3 +60,26 @@ tests {
     expect(res.getResponseTime()).to.be.below(500);
   });
 }
+
+docs {
+  # 🔍 Scenario: Content Filtering & Data Isolation
+
+  This request validates the platform's search capabilities by filtering posts based on a specific author (`userId`).
+
+  ## ✨ Technical Highlights
+
+  ### 1. Business Logic Validation (Iterative Check)
+  Unlike basic tests that only check the API status, this test implements a **Deep Inspection**:
+  * It iterates through the **entire result set** (`forEach`).
+  * It strictly verifies that *every* returned post belongs to the requested user.
+  * **Goal**: Detect "Data Leakage" where the API might ignore the filter and return all records.
+
+  ### 2. Robustness
+  * **Self-Healing**: If the test runs in isolation (no context), it defaults to `User ID: 1` to ensure a valid query and prevent false negatives.
+
+  ## ✅ Quality Gates
+  * **Status**: 200 OK.
+  * **Data Structure**: Response must be a **Non-Empty Array**.
+  * **Filter Integrity**: 100% of returned items match the requested `userId`.
+  * **Performance**: Search query SLA < 500ms.
+}
