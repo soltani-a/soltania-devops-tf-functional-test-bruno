@@ -85,3 +85,25 @@ tests {
     expect(res.getBody().id).to.equal(targetId);
   });
 }
+
+docs {
+  # 🔄 Scenario: Corporate Recruitment (Partial Update)
+  
+  This request simulates a major lifecycle event: an existing user is **recruited** by *Soltania Technology*.
+  
+  ## 💡 Technical Insight: PATCH vs. PUT
+  Unlike the previous `PUT` examples (which replace the entire resource), this `PATCH` request demonstrates a **Delta Update**:
+  * **Goal**: Update only specific business fields (Email, Address, Company).
+  * **Requirement**: Other fields (like `name`, `username`, `phone`) must remain untouched.
+  
+  ## 🏗️ Dynamic Business Logic
+  The `pre-request` script prepares the relocation data:
+  1. **Relocation**: Moves the user to the company HQ in **Kuala Lumpur**.
+  2. **Onboarding**: Generates a fresh `@soltani-a.ai` professional email address.
+  3. **Branding**: Updates the Company Name and Catchphrase.
+  
+  ## ✅ Quality Gates
+  * **Status**: 200 OK.
+  * **Business Logic**: Verifies the user is now officially linked to "Soltani-A" and located in "Kuala Lumpur".
+  * **Technical Integrity**: Crucially checks that the **User ID** remains unchanged after the patch operation.
+}

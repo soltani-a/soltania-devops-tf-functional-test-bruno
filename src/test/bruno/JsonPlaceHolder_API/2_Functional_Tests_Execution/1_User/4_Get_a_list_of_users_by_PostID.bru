@@ -75,3 +75,23 @@ tests {
     expect(res.getResponseTime()).to.be.below(500);
   });
 }
+
+docs {
+  # 🔍 Scenario: Contextual Data Retrieval (Robustness)
+
+  This test simulates fetching user details based on a specific Post context (Inverse relationship query).
+
+  ## 🛡️ Key Feature: Self-Healing Architecture
+  This request demonstrates **Standalone Execution Capability**.
+  * **The Problem:** In a linear run, `{{postId}}` is provided by previous tests. If run in isolation, this variable is undefined, causing a crash or invalid request.
+  * **The Solution:** The `pre-request` script detects if `postId` is missing. If so, it automatically generates a **Random Post ID (1-100)** to ensure the API call remains valid and the test passes.
+
+  ## ⚙️ Data Flow
+  1. **Input:** Uses `postId` (Contextual or Random).
+  2. **Output:** Extracts `fetchedUserId` from the response to potentially link back to other workflows (e.g., "Modify Author").
+
+  ## ✅ Quality Gates
+  * **Status**: 200 OK.
+  * **Structure**: Enforces response as a **Non-Empty Array**.
+  * **Schema**: Validates that returned user objects contain critical identity fields (`username`, `email`, `address`).
+}
