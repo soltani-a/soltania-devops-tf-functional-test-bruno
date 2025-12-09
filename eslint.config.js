@@ -1,20 +1,35 @@
+import globals from "globals";
+import pluginJs from "@eslint/js";
+
 export default [
+  // 1. Définition des dossiers à IGNORER (remplace .eslintignore)
   {
     ignores: [
-      // Ignore all files and directories by default
-      "**/*"
-    ],
+      "node_modules/",
+      "dist/",
+      "coverage/",
+      "reports/",
+      "junit.xml",
+      "**/*.min.js"
+    ]
+  },
+
+  // 2. Configuration pour le code Node.js
+  {
+    files: ["**/*.js"],
+    languageOptions: { 
+      sourceType: "module", // Car tu as "type": "module" dans package.json
+      globals: {
+        ...globals.node,
+        ...globals.mocha // Ajoute ceci si tu utilises 'describe'/'it' dans tes tests
+      } 
+    },
     rules: {
-      // Add basic rules if needed
-      "no-unused-vars": "warn", // Warn on unused variables
-      "no-console": "off"       // Allow console statements
-    },
-    languageOptions: {
-      ecmaVersion: 2021,        // Use ECMAScript 2021
-      sourceType: "module"      // Enable ES module support
-    },
-    linterOptions: {
-      reportUnusedDisableDirectives: true  // Report unused eslint-disable directives
+      "no-unused-vars": "warn",
+      "no-console": "off", // On autorise les logs pour ce projet CLI
     }
-  }
+  },
+
+  // 3. Règles recommandées par défaut
+  pluginJs.configs.recommended,
 ];
