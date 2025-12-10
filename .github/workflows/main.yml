@@ -17,7 +17,7 @@ permissions:  # Ajouter cette section pour configurer les permissions globales
 jobs:
     
   nodejs-workflow:
-    uses: soltani-a/soltania-devops-github-actions-templates-prototype/.github/workflows/nodejs-ci-template.yml@main
+    uses: soltani-a/soltania-platform-workflows/.github/workflows/nodejs-ci-template.yml@main
     secrets: inherit
     with:
       node-version: '20'
